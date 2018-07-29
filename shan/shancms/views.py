@@ -1,3 +1,5 @@
 from django.shortcuts import render
 
-# Create your views here.
+def dashboard(request):
+    ctx = {}
+    return render(request, 'shancms/dashboard.html', ctx)

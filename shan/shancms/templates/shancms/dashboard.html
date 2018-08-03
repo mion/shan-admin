@@ -7,16 +7,19 @@
     <link rel="stylesheet" type="text/css" href="{% static 'shancms/css/datepicker.css' %}">
   </head>
   <body>
+    <div data-shelf-id="{{ shelf_id }}" hidden="true"></div>
     <div class="navbar">
       <div>
         Shelf Analytics
       </div>
     </div>
     <div class="main">
-      <div>
+      <!-- <div>
         <a href="#">Prezunic</a> > Shelf Beverages
-      </div>
+      </div> -->
       <h1>Events</h1>
+      <div id="loading-container" hidden="false"></div>
+      <div id="error-container" hidden="true"></div>
       <div id="chart-container">
         <canvas id="shan-chart" width="600" height="400"></canvas>
       </div>

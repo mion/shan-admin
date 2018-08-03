@@ -6,7 +6,7 @@ import json
 from .models import Event
 
 def dashboard(request):
-    ctx = {}
+    ctx = {'shelf_id': 1}
     return render(request, 'shancms/dashboard.html', ctx)
 
 def get_events(request):

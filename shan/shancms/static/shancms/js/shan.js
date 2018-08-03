@@ -286,9 +286,18 @@ function filterChartDataByDateRange(chartData, startDateString, endDateString) {
 }
 
 function initialize() {
-  var shelfId = 1;
+  var shelfId;
+  try {
+    shelfId = parseInt($('[data-shelf-id]').data('shelf-id'))
+  } catch (error) {
+    alert("Sorry, the server is currently under maintenance. Please try again later.");
+    console.log("Failed to get shelfId from HTML");
+    console.error(error);
+  }
+  console.log('Shelf ID:', shelfId);
   getEvents(shelfId, function (data) {
     if (data) {
+      console.log("Data returned from API:", data);
       $('#chart-controls').show();
       var aggregateByDaysRadio = document.getElementById('agg-days');
       var aggregateByWeeksRadio = document.getElementById('agg-weeks');
@@ -332,6 +341,7 @@ function initialize() {
       });
     } else {
       alert('Network failure. Please try again in a few minutes.');
+      console.error("Failed to get events data from API.");
     }
   });
 }

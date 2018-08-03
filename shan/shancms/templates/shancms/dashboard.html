@@ -9,7 +9,24 @@
       <h1>Shelf Analytics</h1>
       <h2>Dashboard</h2>
       <p>Welcome to Shelf Analytics.</p>
-      <canvas id="myChart" width="600" height="400"></canvas>
+      <div id="chart-container">
+        <canvas id="shan-chart" width="600" height="400"></canvas>
+      </div>
+      <fieldset id="agg-fieldset" hidden="true">
+        <legend>Aggregate by:</legend>
+        <div>
+          <input type="radio" name="agg" id="agg-days" checked/>
+          <label for="agg-days">Days</label>
+        </div>
+        <div>
+          <input type="radio" name="agg" id="agg-weeks"/>
+          <label for="agg-weeks">Weeks</label>
+        </div>
+        <div>
+          <input type="radio" name="agg" id="agg-months"/>
+          <label for="agg-months">Months</label>
+        </div>
+      </fieldset>
     </div>
     <script src="{% static 'shancms/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'shancms/moment-with-locales.min.js' %}"></script>

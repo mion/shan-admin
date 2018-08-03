@@ -3,6 +3,7 @@
   <head>
     <title>Shelf Analytics</title>
     <link rel="stylesheet" type="text/css" href="{% static 'shancms/css/bootstrap.min.css' %}">
+    <!-- <link rel="stylesheet" type="text/css" href="{% static 'shancms/css/bootstrap-datepicker3.min.css' %}"> -->
     <link rel="stylesheet" type="text/css" href="{% static 'shancms/css/style.css' %}">
   </head>
   <body>
@@ -13,21 +14,11 @@
       <div id="chart-container">
         <canvas id="shan-chart" width="600" height="400"></canvas>
       </div>
-      <!-- <fieldset id="agg-fieldset" hidden="true">
-        <legend>Aggregate by:</legend>
-        <div>
-          <input type="radio" name="agg" id="agg-days" checked/>
-          <label for="agg-days">Days</label>
-        </div>
-        <div>
-          <input type="radio" name="agg" id="agg-weeks"/>
-          <label for="agg-weeks">Weeks</label>
-        </div>
-        <div>
-          <input type="radio" name="agg" id="agg-months"/>
-          <label for="agg-months">Months</label>
-        </div>
-      </fieldset> -->
+      <!-- <div class="input-daterange input-group" id="datepicker">
+          <input type="text" class="input-sm form-control" name="start" />
+          <span class="input-group-addon">to</span>
+          <input type="text" class="input-sm form-control" name="end" />
+      </div> -->
       <div id="agg-fieldset" class="btn-group btn-group-toggle" data-toggle="buttons">
         <label class="btn btn-secondary active">
           <input type="radio" name="agg-period" id="agg-days" autocomplete="off" checked> Days
@@ -41,6 +32,10 @@
       </div>
     </div>
     <script src="{% static 'shancms/js/jquery-3.3.1.min.js' %}"></script>
+    <!-- <script src="{% static 'shancms/js/popper.min.js' %}"></script> -->
+    <script src="{% static 'shancms/js/bootstrap.min.js' %}"></script>
+    <!-- <script src="{% static 'shancms/js/bootstrap-datepicker.min.js' %}"></script> -->
+    <!-- <script src="{% static 'shancms/js/locales/bootstrap-datepicker.pt-BR.min.js' %}"></script> -->
     <script src="{% static 'shancms/js/moment-with-locales.min.js' %}"></script>
     <script src="{% static 'shancms/js/Chart.min.js' %}"></script>
     <script src="{% static 'shancms/js/shan.js' %}"></script>

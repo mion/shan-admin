@@ -263,19 +263,22 @@ function initialize() {
       var eventsByDateString = aggregateEventsByDateString(data.events);
       var chartData = buildChartData(data.events[0].date, data.events[data.events.length - 1].date, eventsByDateString);
       var chart = createAndShowChart(chartData);
+      /*
+        I'm using this random crap...
+        https://github.com/fengyuanchen/datepicker
+        ...because Bootstrap, jQuery UI et al was made by idiots.
+       */
+      $('[data-toggle="datepicker"]').datepicker();
       $('#agg-fieldset').show();
       $('#agg-days').on('click', function () {
-        $('#agg-days').button('toggle');
         var updatedChartData = aggregateChartData(chartData, 'days');
         updateChart(chart, updatedChartData);
       });
       $('#agg-weeks').on('click', function () {
-        $('#agg-days').button('toggle');
         var updatedChartData = aggregateChartData(chartData, 'weeks');
         updateChart(chart, updatedChartData);
       });
       $('#agg-months').on('click', function () {
-        $('#agg-days').button('toggle');
         var updatedChartData = aggregateChartData(chartData, 'months');
         updateChart(chart, updatedChartData);
       });

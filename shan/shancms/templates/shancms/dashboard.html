@@ -2,7 +2,8 @@
 <html>
   <head>
     <title>Shelf Analytics</title>
-    <link rel="stylesheet" type="text/css" href="{% static 'shancms/style.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'shancms/css/bootstrap.min.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'shancms/css/style.css' %}">
   </head>
   <body>
     <div class="main">
@@ -12,7 +13,7 @@
       <div id="chart-container">
         <canvas id="shan-chart" width="600" height="400"></canvas>
       </div>
-      <fieldset id="agg-fieldset" hidden="true">
+      <!-- <fieldset id="agg-fieldset" hidden="true">
         <legend>Aggregate by:</legend>
         <div>
           <input type="radio" name="agg" id="agg-days" checked/>
@@ -26,11 +27,22 @@
           <input type="radio" name="agg" id="agg-months"/>
           <label for="agg-months">Months</label>
         </div>
-      </fieldset>
+      </fieldset> -->
+      <div id="agg-fieldset" class="btn-group btn-group-toggle" data-toggle="buttons">
+        <label class="btn btn-secondary active">
+          <input type="radio" name="agg-period" id="agg-days" autocomplete="off" checked> Days
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="agg-period" id="agg-weeks" autocomplete="off"> Weeks
+        </label>
+        <label class="btn btn-secondary">
+          <input type="radio" name="agg-period" id="agg-months" autocomplete="off"> Months
+        </label>
+      </div>
     </div>
-    <script src="{% static 'shancms/jquery-3.3.1.min.js' %}"></script>
-    <script src="{% static 'shancms/moment-with-locales.min.js' %}"></script>
-    <script src="{% static 'shancms/Chart.min.js' %}"></script>
-    <script src="{% static 'shancms/shan.js' %}"></script>
+    <script src="{% static 'shancms/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'shancms/js/moment-with-locales.min.js' %}"></script>
+    <script src="{% static 'shancms/js/Chart.min.js' %}"></script>
+    <script src="{% static 'shancms/js/shan.js' %}"></script>
   </body>
 </html>

@@ -264,15 +264,18 @@ function initialize() {
       var chartData = buildChartData(data.events[0].date, data.events[data.events.length - 1].date, eventsByDateString);
       var chart = createAndShowChart(chartData);
       $('#agg-fieldset').show();
-      $('#agg-days').on('change', function () {
+      $('#agg-days').on('click', function () {
+        $('#agg-days').button('toggle');
         var updatedChartData = aggregateChartData(chartData, 'days');
         updateChart(chart, updatedChartData);
       });
       $('#agg-weeks').on('click', function () {
+        $('#agg-days').button('toggle');
         var updatedChartData = aggregateChartData(chartData, 'weeks');
         updateChart(chart, updatedChartData);
       });
       $('#agg-months').on('click', function () {
+        $('#agg-days').button('toggle');
         var updatedChartData = aggregateChartData(chartData, 'months');
         updateChart(chart, updatedChartData);
       });

@@ -30,7 +30,7 @@ function createAndShowChart(chartData) {
   var myChart = new Chart(ctx, {
       type: 'line',
       data: {
-          labels: chartData.labels,
+          labels: chartData.labels.map(dateFormattedForLabel),
           datasets: [
             {
               label: CHART_LABEL_WALKED,
@@ -81,7 +81,15 @@ function momentToDate(m) {
 }
 
 function dateToString(date) {
-  return moment(date).format('MMM D');
+  return moment(date).format('MM/DD/YYYY');
+}
+
+function stringToDate(string) {
+  return momentToDate(moment(string, 'MM/DD/YYYY'));
+}
+
+function dateFormattedForLabel(dateString) {
+  return moment(dateString, 'MM/DD/YYYY').format('MMM D');
 }
 
 function aggregateEventsByDateString(events) {
@@ -151,7 +159,7 @@ function updateChart(chart, chartData) {
   chart.data.labels = [];
   chart.data.datasets = [];
   chart.update();
-  chart.data.labels = chartData.labels;
+  chart.data.labels = chartData.labels.map(dateFormattedForLabel);
   chart.data.datasets.push({
     label: CHART_LABEL_WALKED,
     backgroundColor: 'rgba(255, 0, 0)',
@@ -245,45 +253,85 @@ function aggregateChartData(chartData, period) { // TODO: refactor this hacky cr
   return newData;
 }
 
+
 $(document).ready(function () {
   initialize();
 });
 
+function filterChartDataByDateRange(chartData, startDateString, endDateString) {
+  console.log(chartData.labels);
+  var filteredData = {
+    labels: [],
+    walkedData: [],
+    interactedData: [],
+    ponderedData: [],
+    ponderedDurationData: []
+  };
+  var startDate = stringToDate(startDateString);
+  var endDate = stringToDate(endDateString);
+  console.log('startDate', startDate)
+  console.log('endDate', endDate)
+  for (var index = 0; index < chartData.labels.length; index++) {
+    var dateString = chartData.labels[index];
+    var date = stringToDate(dateString);
+    if ((date.getTime() >= startDate.getTime()) && (date.getTime() <= endDate.getTime())) {
+      filteredData.labels.push(chartData.labels[index]);
+      filteredData.walkedData.push(chartData.walkedData[index]);
+      filteredData.interactedData.push(chartData.interactedData[index]);
+      filteredData.ponderedData.push(chartData.ponderedData[index]);
+      filteredData.ponderedDurationData.push(chartData.ponderedDurationData[index]);
+    }
+  }
+  return filteredData;
+}
+
 function initialize() {
-  window.moment = moment;
-  window.aggregateEventsByDateString = aggregateEventsByDateString;
-  window.buildChartData = buildChartData;
-
   var shelfId = 1;
-
   getEvents(shelfId, function (data) {
     if (data) {
-      console.log(data);
-      window.data = data;
+      $('#chart-controls').show();
+      var aggregateByDaysRadio = document.getElementById('agg-days');
+      var aggregateByWeeksRadio = document.getElementById('agg-weeks');
+      var aggregateByMonthsRadio = document.getElementById('agg-months');
+      aggregateByDaysRadio.checked = true;
+      aggregateByWeeksRadio.checked = false;
+      aggregateByMonthsRadio.checked = false;
       var eventsByDateString = aggregateEventsByDateString(data.events);
       var chartData = buildChartData(data.events[0].date, data.events[data.events.length - 1].date, eventsByDateString);
       var chart = createAndShowChart(chartData);
+      var firstDateFromAPI = momentToDate(moment(data.events[0].date));
+      var lastDateFromAPI = momentToDate(moment(data.events[data.events.length - 1].date));
       /*
         I'm using this random crap...
         https://github.com/fengyuanchen/datepicker
-        ...because Bootstrap, jQuery UI et al was made by idiots.
+        ...because the alternatives (Bootstrap, jQuery UI et al.) were made by idiots.
        */
-      $('[data-toggle="datepicker"]').datepicker();
-      $('#agg-fieldset').show();
-      $('#agg-days').on('click', function () {
-        var updatedChartData = aggregateChartData(chartData, 'days');
-        updateChart(chart, updatedChartData);
+      $('#agg-start-date').val(dateToString(firstDateFromAPI));
+      $('#agg-end-date').val(dateToString(lastDateFromAPI));
+      $('[data-toggle="datepicker"]').datepicker({
+        startDate: firstDateFromAPI,
+        endDate: lastDateFromAPI
       });
-      $('#agg-weeks').on('click', function () {
-        var updatedChartData = aggregateChartData(chartData, 'weeks');
-        updateChart(chart, updatedChartData);
+      $(document).on('pick.datepicker', function (e) {
+        $('[data-toggle="datepicker"]').datepicker('hide');
       });
-      $('#agg-months').on('click', function () {
-        var updatedChartData = aggregateChartData(chartData, 'months');
+      $('#btn-reload').on('click', function () {
+        var startDateString = $('#agg-start-date').val();
+        var endDateString = $('#agg-end-date').val();
+        var filteredChartData = filterChartDataByDateRange(chartData, startDateString, endDateString);
+        var period;
+        if (aggregateByWeeksRadio.checked) {
+          period = 'weeks';
+        } else if (aggregateByMonthsRadio.checked) {
+          period = 'months';
+        } else {
+          period = 'days';
+        }
+        var updatedChartData = aggregateChartData(filteredChartData, period);
         updateChart(chart, updatedChartData);
       });
     } else {
-      alert('Error getting events.');
+      alert('Network failure. Please try again in a few minutes.');
     }
-  })
+  });
 }

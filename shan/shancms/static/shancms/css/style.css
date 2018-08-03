@@ -5,10 +5,76 @@
 }
 
 html {
-  font-family: 'Arial', sans-serif;
+  font-family: 'Lato', 'Arial', sans-serif;
+}
+
+body {
+  padding: 0;
+  margin: 0;
+  background-color: #F6F6F6;
+}
+
+.navbar {
+  background-color: #111;
+  color: #FFF;
+  padding-top: 8px;
+  padding-bottom: 8px;
+}
+
+.navbar > div {
+  width: 80%;
+  margin: 0 auto;
 }
 
 .main {
   width: 80%;
   margin: 0 auto;
+}
+
+.text-normal {
+  font-size: 15px;
+}
+
+.text-large {
+  color: #222;
+  font-size: 20px;
+}
+
+.fieldset {
+  padding: 16px;
+}
+
+.fieldset > div {
+  padding: 4px;
+}
+
+#agg-fieldset > div {
+  display: inline;
+}
+
+a.button1 {
+  display:inline-block;
+  padding:0.35em 1.2em;
+  border:0.1em solid #FFFFFF;
+  margin:0 0.3em 0.3em 0;
+  border-radius:0.12em;
+  box-sizing: border-box;
+  text-decoration:none;
+  font-family:'Roboto',sans-serif;
+  font-weight:300;
+  color:#FFFFFF;
+  text-align:center;
+  transition: all 0.2s;
+}
+
+a.button1:hover {
+  color:#000000;
+  background-color:#FFFFFF;
+}
+
+@media all and (max-width:30em){
+  a.button1 {
+    display:block;
+    margin:0.4em auto;
+  }
 }

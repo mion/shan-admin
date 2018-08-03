@@ -2,46 +2,56 @@
 <html>
   <head>
     <title>Shelf Analytics</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'shancms/css/style.css' %}">
     <link rel="stylesheet" type="text/css" href="{% static 'shancms/css/datepicker.css' %}">
   </head>
   <body>
+    <div class="navbar">
+      <div>
+        Shelf Analytics
+      </div>
+    </div>
     <div class="main">
-      <h1>Shelf Analytics</h1>
-      <h2>Dashboard</h2>
-      <p>Welcome to Shelf Analytics.</p>
+      <div>
+        <a href="#">Prezunic</a> > Shelf Beverages
+      </div>
+      <h1>Events</h1>
       <div id="chart-container">
         <canvas id="shan-chart" width="600" height="400"></canvas>
       </div>
-      <fieldset id="agg-fieldset" hidden="true">
-        <legend>Aggregate by:</legend>
-        <div>
-          <input type="radio" name="agg" id="agg-days" checked/>
-          <label for="agg-days">Days</label>
-        </div>
-        <div>
-          <input type="radio" name="agg" id="agg-weeks"/>
-          <label for="agg-weeks">Weeks</label>
-        </div>
-        <div>
-          <input type="radio" name="agg" id="agg-months"/>
-          <label for="agg-months">Months</label>
-        </div>
-      </fieldset>
-      <br/>
-      <fieldset id="agg-date-fieldset">
-        <legend>Date range:</legend>
-        <div style="padding: 10px">
-          <label for="agg-start-date">Start</label>
-          <input id="agg-start-date" data-toggle="datepicker">
-        </div>
-        <div style="padding: 10px">
-          <label for="agg-end-date">End</label>
-          <input id="agg-end-date" data-toggle="datepicker">
-        </div>
-      </fieldset>
-      <br/>
-      <button id="btn-reload">Reload chart</button>
+      <div id="chart-controls" hidden="true">
+        <br />
+        <fieldset id="agg-fieldset" class="fieldset">
+          <legend><b class="text-large">Average by period</b></legend>
+          <div>
+            <input type="radio" name="agg" id="agg-days" checked/>
+            <label for="agg-days" class="text-normal">1 day</label>
+          </div>
+          <div>
+            <input type="radio" name="agg" id="agg-weeks"/>
+            <label for="agg-weeks" class="text-normal">7 days</label>
+          </div>
+          <div>
+            <input type="radio" name="agg" id="agg-months"/>
+            <label for="agg-months" class="text-normal">30 days</label>
+          </div>
+        </fieldset>
+        <br/>
+        <fieldset id="agg-date-fieldset" class="fieldset">
+          <legend><b class="text-large">Filter by date</b></legend>
+          <span>
+            <label for="agg-start-date">Show events from </label>
+            <input id="agg-start-date" data-toggle="datepicker">
+          </span>
+          <span>
+            <label for="agg-end-date"> to </label>
+            <input id="agg-end-date" data-toggle="datepicker">
+          </span>
+        </fieldset>
+        <br/>
+        <a id="btn-reload" class="button1" href="#">Reload chart</a>
+      </div>
     </div>
     <script src="{% static 'shancms/js/jquery-3.3.1.min.js' %}"></script>
     <script src="{% static 'shancms/js/datepicker.js' %}"></script>

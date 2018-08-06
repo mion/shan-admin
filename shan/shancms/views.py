@@ -5,9 +5,50 @@ import json
 
 from .models import Event
 
-def dashboard(request):
+def venues_list(request):
+    ctx = {
+        'current_user': {
+            'email': 'gluisvieira@gmail.com'
+        },
+        'venues_count': 3,
+        'venues': [
+            {
+                'id': 1,
+                'name': 'Prezunic',
+                'address': 'Rua General Polidoro 308 - Rio de Janeiro, RJ - 22470010 - Brasil'
+            },
+            {
+                'id': 2,
+                'name': 'Walmart WL',
+                'address': 'Avenida Washington Luis 319 - Rio de Janeiro, RJ - 22470010 - Brasil'
+            },
+        ]
+    }
+    return render(request, 'shancms/venues_list.html', ctx)
+
+def venues_detail(request, venue_id):
+    ctx = {
+        'venue': {
+            'id': 1,
+            'name': 'Prezunic'
+        },
+        'shelves_count': 2,
+        'shelves': [
+            {
+                'id': 1,
+                'name': 'CORREDOR GARRAFAS PET 2L'
+            },
+            {
+                'id': 2,
+                'name': 'GONDOLA PREMIUM COCA-COLA'
+            }
+        ]
+    }
+    return render(request, 'shancms/venues_detail.html', ctx)
+
+def shelfs_detail(request, venue_id, shelf_id):
     ctx = {'shelf_id': 1}
-    return render(request, 'shancms/dashboard.html', ctx)
+    return render(request, 'shancms/shelfs_detail.html', ctx)
 
 def get_events(request):
     shelf_id_str = request.GET.get('shelf_id', None)

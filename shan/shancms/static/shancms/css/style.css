@@ -11,25 +11,100 @@ html {
 body {
   padding: 0;
   margin: 0;
-  background-color: #F6F6F6;
-}
-
-.navbar {
-  background-color: #111;
-  color: #FFF;
-  padding-top: 8px;
-  padding-bottom: 8px;
-}
-
-.navbar > div {
-  width: 80%;
-  margin: 0 auto;
+  background-color: #FDFDFE;
 }
 
 .main {
   width: 80%;
   margin: 0 auto;
 }
+
+.footer {
+  height: 10%;
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 12px;
+  color: rgba(0, 0, 0, .42);
+}
+
+/* Utils */
+
+.right {
+  float: right;
+}
+
+a.link {
+  color: #0099FF;
+  text-decoration: none;
+}
+
+a.link:hover {
+  color: #22BBFF;
+  text-decoration: underline;
+}
+
+/* Navigation Bar */
+
+.navbar-bg {
+  background-color: #4A4A4A;
+  color: #FFF;
+  padding-top: 15px;
+  padding-bottom: 10px;
+}
+
+.navbar-container {
+  width: 80%;
+  margin: 0 auto;
+}
+
+.navbar-container > .left {
+  display: inline-block;
+  width: 33%;
+}
+
+.navbar-container > .right {
+  display: inline-block;
+  width: 33%;
+}
+
+.navbar-container > .middle {
+  display: inline-block;
+  width: 33%;
+  margin: 0 auto;
+}
+
+.logo {
+  display: inline;
+}
+
+.account {
+  display: inline;
+  font-size: 14px;
+  color: #AAA;
+}
+
+.account > a {
+  color: #0099FF;
+  text-decoration: none;
+}
+
+.account > a:hover {
+  color: #22BBFF;
+  text-decoration: underline;
+}
+
+.venue {
+  background-color: #FFF;
+  border: 1px solid #DDD;
+  border-radius: 4px;
+  padding: 25px 40px;
+  margin-bottom: 10px;
+}
+
+/* Text */
 
 .text-normal {
   font-size: 15px;
@@ -39,6 +114,8 @@ body {
   color: #222;
   font-size: 20px;
 }
+
+/* Forms */
 
 .fieldset {
   padding: 16px;

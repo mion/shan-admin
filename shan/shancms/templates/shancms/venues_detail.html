@@ -1,0 +1,43 @@
+{% load static %}
+<html>
+  <head>
+    <title>Shelf Analytics</title>
+    <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
+    <link rel="stylesheet" type="text/css" href="{% static 'shancms/css/style.css' %}">
+  </head>
+  <body>
+    <div data-shelf-id="{{ shelf_id }}" hidden="true"></div>
+    <div class="navbar-bg">
+      <div class="navbar-container">
+        <div class="left">
+          <div class="logo">
+            Shelf Analytics
+          </div>
+        </div>
+        <div class="middle"></div>
+        <div class="right">
+          <div class="account">
+            {{ current_user.email }}
+            <a href='#'>(sair da conta)</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="main">
+      <h1>{{ venue.name }} > Shelves </h1>
+      <p>Found {{ shelves_count }} shelves.</p>
+      <div class="venues">
+      {% for shelf in shelves %}
+        <div class="venue">
+          <b>{{ shelf.name }}</b>
+          <a href="{% url 'shancms:shelfs_detail' venue.id shelf.id %}" class="link right">View shelf</a>
+        </div>
+      {% endfor %}
+      </div>
+    </div>
+    <div class="footer">
+      Copyright © 2018 TonetoLabs, Inc.<br>All rights reserved.
+    </div>
+    <script src="{% static 'shancms/js/jquery-3.3.1.min.js' %}"></script>
+  </body>
+</html>

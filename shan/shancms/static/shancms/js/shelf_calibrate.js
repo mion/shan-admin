@@ -69,6 +69,7 @@ function getContext(canvas) {
 }
 
 function resizeCanvas(canvas, width, height) {
+  document.getElementById('canvas-message').width = width;
   canvas.width = width;
   canvas.height = height;
   return canvas;
@@ -85,15 +86,20 @@ function erase(canvas) {
 }
 
 function renderMousePosition(canvas, x, y) {
+  if (canvas.currentlyEditingRoi === null) {
+    return;
+  }
   var PADDING = 10;
   var ctx = getContext(canvas);
-  renderCalibrationImage(canvas, canvas.calibrationImage);
   ctx.font = '13px sans-serif';
   ctx.fillStyle = 'rgba(255, 255, 255, 0.67)';
   ctx.fillText('(' + x + ',' + y + ')', x + PADDING, y + 2*PADDING);
 }
 
 function renderMouseCursor(canvas, x, y) {
+  if (canvas.currentlyEditingRoi === null) {
+    return;
+  }
   var ctx = getContext(canvas);
   var CROSSHAIR_THICKNESS = 1;
   var CROSSHAIR_SIZE = 16;
@@ -133,6 +139,13 @@ function addROIEditingListeners(canvas) {
     renderMousePosition(canvas, relativeX, relativeY);
     renderMouseCursor(canvas, relativeX, relativeY);
     renderRois(canvas, canvas['shelfRoi'], canvas['aisleRoi']);
+    if (canvas['currentlyEditingRoi'] !== null) {
+      var w = relativeX - canvas['clicks'][0].x;
+      var h = relativeY - canvas['clicks'][0].y;
+      var ctx = getContext(canvas);
+      ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+      ctx.strokeRect(canvas['clicks'][0].x, canvas['clicks'][0].y, w, h);
+    }
   };
   var mouseClickHandler = function(e) {
     var relativeX = e.clientX - canvas.offsetLeft;
@@ -142,6 +155,7 @@ function addROIEditingListeners(canvas) {
     if (canvas['currentlyEditingRoi'] !== null) {
       if (canvas['clicks'].length === 0) {
         canvas['clicks'].push({x: relativeX, y: relativeY});
+        $('#canvas-message').text('↘️ Click again to define the region of interest.');
       } else if (canvas['clicks'].length === 1) {
         var w = relativeX - canvas['clicks'][0].x;
         var h = relativeY - canvas['clicks'][0].y;
@@ -168,6 +182,13 @@ function addROIEditingListeners(canvas) {
         } else {
           throw new DOMException("unknown roi key: " + canvas['currentlyEditingRoi']);
         }
+        setEditingMode(null);
+        $('#canvas-message').text('✅ Region of interest updated.');
+        setTimeout(function () {
+          if (canvas['currentlyEditingRoi'] === null) {
+            $('#canvas-message').text('');
+          }
+        }, 3000);
         renderCalibrationImage(canvas, canvas['calibrationImage']);
         renderRois(canvas, canvas['shelfRoi'], canvas['aisleRoi']);
       }
@@ -254,6 +275,24 @@ function updateCameraLogs(shelfId) {
   }, 1000);
 }
 
+function setEditingMode(currentlyEditingRoi) {
+  if (currentlyEditingRoi === null) {
+    $("#calibration-canvas").removeClass("cursor-none");
+    $("#btn-create").removeClass("button0").addClass('button1');
+    $("#btn-test").removeClass("button0").addClass('button3');
+    $("#btn-draw-aisle").removeClass("button0").addClass('button2');
+    $("#btn-draw-shelf").removeClass("button0").addClass('button2');
+    $("#btn-edit-params").removeClass("button0").addClass('button2');
+  } else {
+    $("#calibration-canvas").addClass("cursor-none");
+    $("#btn-create").removeClass("button1").addClass('button0');
+    $("#btn-test").removeClass("button3").addClass('button0');
+    $("#btn-draw-shelf").removeClass("button2").addClass('button0');
+    $("#btn-draw-aisle").removeClass("button2").addClass('button0');
+    $("#btn-edit-params").removeClass("button2").addClass('button0');
+  }
+}
+
 $(document).ready(function () {
   var shelfId = $('[data-shelf-id]').data('shelf-id');
   var calibrationImageUrl = $('[data-calibration-image-url]').data('calibration-image-url');
@@ -310,12 +349,15 @@ $(document).ready(function () {
     var canvas = getCanvas();
     canvas['currentlyEditingRoi'] = 'aisle';
     canvas['clicks'] = [];
+    setEditingMode(canvas.currentlyEditingRoi);
+    $('#canvas-message').text('↖️ Click somewhere to define the top-left corner of the region of interest.');
     console.log(e);
   });
   $('#btn-draw-shelf').on('click', function (e) {
     var canvas = getCanvas();
     canvas['currentlyEditingRoi'] = 'shelf';
     canvas['clicks'] = [];
+    setEditingMode(canvas.currentlyEditingRoi);
     console.log(e);
   });
 });

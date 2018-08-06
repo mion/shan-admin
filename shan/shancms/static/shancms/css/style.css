@@ -169,7 +169,15 @@ p {
 
 /* Calibration videos */
 #calibration-canvas {
+  border: 1px solid #777;
+}
+
+.cursor-none {
   cursor: none;
+}
+
+.cursor-pointer {
+  cursor: pointer;
 }
 
 /* video {
@@ -323,4 +331,12 @@ a.button0:hover {
   padding: 28px;
   margin-top: 10px;
   border-radius: 8px;
+}
+
+#canvas-message {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 13px;
+  line-height: 1.62em;
+  color: #333;
+  padding-top: 14px;
 }

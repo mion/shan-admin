@@ -55,7 +55,7 @@ def venues_detail(request, venue_id):
 
 def shelfs_detail(request, venue_id, shelf_id):
     ctx = {
-        'shelf_id': 1,
+        'shelf': {'id': 1},
         'venue': {
             'id': 1,
             'name': 'Prezunic'
@@ -67,6 +67,36 @@ def shelfs_detail(request, venue_id, shelf_id):
         'last_date': 'Mon 9 Dec, 2018',
     }
     return render(request, 'shancms/shelfs_detail.html', ctx)
+
+def shelfs_calibrate(request, venue_id, shelf_id):
+    ctx = {
+        'shelf': {'id': 1},
+        'venue': {
+            'id': 1,
+            'name': 'Prezunic'
+        },
+        'my_calibration_video': {
+            'id': 1,
+            'recording_date': '2018/08/01 14:15 (UTC)',
+            'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4'
+        },
+        'other_calibration_videos': [
+            {
+                'id': 2,
+                'recording_date': '2018/07/31 17:58 (UTC)',
+                'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4'
+            },
+            {
+                'id': 3,
+                'recording_date': '2018/07/31 16:29 (UTC)',
+                'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4'
+            }
+        ],
+        'current_user': {
+            'email': 'gluisvieira@gmail.com'
+        },
+    }
+    return render(request, 'shancms/shelfs_calibrate.html', ctx)
 
 def get_events(request):
     shelf_id_str = request.GET.get('shelf_id', None)

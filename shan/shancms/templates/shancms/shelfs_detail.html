@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'shancms/css/datepicker.css' %}">
   </head>
   <body>
-    <div data-shelf-id="{{ shelf_id }}" hidden="true"></div>
+    <div data-shelf-id="{{ shelf.id }}" hidden="true"></div>
     <div class="navbar-bg">
       <div class="navbar-container">
         <div class="left">
@@ -66,7 +66,7 @@
         </fieldset>
         <br/>
         <a id="btn-reload" class="button1" href="#">Reload chart</a>
-        <a id="btn-calibrate" class="button2" href="#">Calibrate</a>
+        <a id="btn-calibrate" class="button2" href="{% url 'shancms:shelfs_calibrate' venue.id shelf.id %}">Calibrate</a>
       </div>
       <div class="footer">
         Copyright © 2018 TonetoLabs, Inc.<br>All rights reserved.

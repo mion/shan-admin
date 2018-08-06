@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'shancms/css/style.css' %}">
   </head>
   <body>
+    <div data-shelf-id="{{ shelf.id }}" hidden="true"></div>
     <div class="navbar-bg">
       <div class="navbar-container">
         <div class="left">
@@ -23,22 +24,26 @@
       </div>
     </div>
     <div class="main">
-      <h1>Venues</h1>
-      <p>Found {{ venues_count }} venues.</p>
+      <h1>Calibrate a shelf</h1>
+      <p>
+        <label for="calib-video-select">Choose a calibration video:</label>
+        <select id="calib-video-select">
+            <option value="{{ my_calibration_video.id }}">{{ my_calibration_video.recording_date }}</option>
+            {% for calib_video in other_calibration_videos %}
+            <option value="{{ calib_video.id }}">{{ calib_video.recording_date }}</option>
+            {% endfor %}
+        </select>
+      </p>
       <div class="v-space-1grem"></div>
-      <div class="venues">
-      {% for venue in venues %}
-        <div class="venue">
-          <b>{{ venue.name }}</b>
-          <hr>
-          {{ venue.address }}
-          <br>
-          <a href="{% url 'shancms:venues_detail' venue.id %}" class="link right">View venue</a>
-          <br>
-        </div>
-      {% endfor %}
-      </div>
-      <a id="btn-create" class="button1" href="#">Create venue</a>
+      <video src="http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4"></video>
+      <!-- <div class="calibration-videos">
+        <a href="#">Video 2018/08/01 14:15 (UTC)</a>
+      </div> -->
+      <br>
+      <br>
+      <br>
+      <a id="btn-create" class="button1" href="#">Save</a>
+      <a id="btn-cancel" class="button2" href="#">Cancel</a>
     </div>
     <div class="footer">
       Copyright © 2018 TonetoLabs, Inc.<br>All rights reserved.

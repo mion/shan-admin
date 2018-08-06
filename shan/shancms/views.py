@@ -133,3 +133,15 @@ def get_events(request):
         obj = {'type': evt.event_type, 'date': evt.creation_date, 'params': json.loads(evt.event_params)}
         evt_objs.append(obj)
     return JsonResponse({'shelf_id': shelf_id, 'events': evt_objs})
+
+def create_record_job(request):
+    pass
+
+def create_experiment_job(request):
+    pass
+
+def shelf_update(request):
+    pass
+
+def get_camera_logs(request):
+    pass

@@ -193,7 +193,6 @@ function renderMouseCursor(canvas, x, y) {
   ctx.closePath();
 }
 
-
 function renderRois(canvas, shelfRoi, aisleRoi) {
   var PADDING = 20;
   var ctx = getContext(canvas);

@@ -161,6 +161,10 @@ p {
 }
 
 /* Calibration videos */
+#calibration-canvas {
+  cursor: none;
+}
+
 /* video {
   width: 50%;
 } */

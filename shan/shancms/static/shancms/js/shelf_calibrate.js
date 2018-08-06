@@ -29,13 +29,38 @@ function renderCalibrationImage(ctx, img) {
   ctx.drawImage(img, 0, 0);
 }
 
+function renderMousePosition(canvas, x, y) {
+  var ctx = getContext(canvas);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  renderCalibrationImage(ctx, canvas.calibrationImage);
+  ctx.font = '13px sans-serif';
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+  ctx.fillText('(' + x + ',' + y + ')', x, y);
+}
+
+function renderMouseCursor(canvas, x, y) {
+  var ctx = getContext(canvas);
+  var CROSSHAIR_THICKNESS = 1;
+  var CROSSHAIR_SIZE = 16;
+  ctx.fillStyle = 'rgb(0, 255, 0)';
+  ctx.fillRect(x - (CROSSHAIR_SIZE / 2), y - (CROSSHAIR_THICKNESS / 2), CROSSHAIR_SIZE, CROSSHAIR_THICKNESS);
+  ctx.fillRect(x - (CROSSHAIR_THICKNESS / 2), y - (CROSSHAIR_SIZE / 2), CROSSHAIR_THICKNESS, CROSSHAIR_SIZE);
+}
+
 function addROIEditingListeners(canvas) {
   var mouseMoveHandler = function(e) {
     var relativeX = e.clientX - canvas.offsetLeft;
     var relativeY = e.clientY - canvas.offsetTop;
-    // console.log('mousemove (x, y)', relativeX, relativeY);
-  }
+    renderMousePosition(canvas, relativeX + 10, relativeY + 15);
+    renderMouseCursor(canvas, relativeX, relativeY);
+  };
+  var mouseClickHandler = function(e) {
+    var relativeX = e.clientX - canvas.offsetLeft;
+    var relativeY = e.clientY - canvas.offsetTop;
+    console.log('Mouse click at (x, y):', relativeX, relativeY);
+  };
   canvas.addEventListener("mousemove", mouseMoveHandler, false);
+  canvas.addEventListener("mousedown", mouseClickHandler, false);
 }
 
 $(document).ready(function () {
@@ -52,6 +77,8 @@ $(document).ready(function () {
       renderCalibrationImage(context, image);
       console.log('Calibration image rendered.');
 
+      // FIXME: This is very bad.
+      canvas['calibrationImage'] = image;
       addROIEditingListeners(canvas);
       console.log('ROI editing listeners are ready.');
     },

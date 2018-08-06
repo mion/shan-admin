@@ -244,6 +244,27 @@ a.button3:hover {
   background-color:#22AA22;
 }
 
+a.button0 {
+  display:inline-block;
+  padding:0.82em 1.68em;
+  border:0.1em solid #FFFFFF;
+  margin:0 0.3em 0.3em 0;
+  border-radius:0.3em;
+  box-sizing: border-box;
+  text-decoration:none;
+  font-weight:300;
+  color:#CCC;
+  background-color:#888;
+  text-align:center;
+  transition: all 0.2s;
+  cursor: not-allowed;
+}
+
+a.button0:hover {
+  color:#DDD;
+  background-color:#999;
+}
+
 @media all and (max-width:30em){
   a.button1, a.button2, a.button3 {
     display:block;
@@ -286,4 +307,20 @@ a.button3:hover {
   width: 20%;
   display: inline-block;
   text-align: right;
+}
+
+#status-record {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.75);
+}
+
+#camera-logs {
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: 12px;
+  background-color: #222;
+  line-height: 1.62em;
+  color: #dfd;
+  padding: 28px;
+  margin-top: 10px;
+  border-radius: 8px;
 }

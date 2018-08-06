@@ -2,6 +2,7 @@
 <html>
   <head>
     <title>Shelf Analytics</title>
+    <link href="https://fonts.googleapis.com/css?family=IBM+Plex+Mono" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css?family=Lato:400,700" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'shancms/css/style.css' %}">
   </head>
@@ -27,7 +28,7 @@
     <div class="main">
       <h1>Calibrate a shelf</h1>
       <p>
-        <label for="calib-video-select">Choose a calibration video:</label>
+        <label for="calib-video-select">Choose a calibration video:  </label>
         <select id="calib-video-select">
             <option value="{{ my_calibration_video.id }}">{{ my_calibration_video.recording_date }}</option>
             {% for calib_video in other_calibration_videos %}
@@ -35,8 +36,14 @@
             {% endfor %}
         </select>
       </p>
+      <a id="view-camera-logs" href="#" class="link">View camera logs</a>
+      <div id="camera-logs">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, dignissimos quae? Neque quod, natus minus alias dolorum adipisci eaque porro deserunt delectus autem quam optio quia pariatur ex maiores quibusdam.
+      </div>
       <div class="v-space-1grem"></div>
       <a id="btn-record" class="button3" href="#">Record calibration video</a>
+      <span id="status-record">
+      </span>
       <div class="v-space-1grem"></div>
       <canvas id="calibration-canvas"></canvas>
       <div class="v-space-1grem"></div>

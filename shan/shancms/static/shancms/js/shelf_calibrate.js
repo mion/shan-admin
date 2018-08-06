@@ -6,12 +6,35 @@ var ShanAPIClient = function() {
 };
 
 ShanAPIClient.prototype.createCalibrationVideoRecordingJob = function (shelfId, callbacks) {
+  setTimeout(function () {
+    var date = new Date();
+    callbacks.success({
+      'calibration_video': {
+        'id': 4,
+        'recording_date': date.toDateString(),
+        'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4',
+        'video_calibration_image_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.jpg',
+      }
+    });
+  }, 1750);
 };
 
 ShanAPIClient.prototype.createCalibrationTestJob = function (shelfId, callbacks) {
 };
 
 ShanAPIClient.prototype.setCalibrationVideo = function (shelfId, calibrationVideoId, callbacks) {
+};
+
+ShanAPIClient.prototype.getCameraLogs = function (shelfId, numberOfLines, callbacks) {
+  setTimeout(function () {
+    text = [
+      "Mon 6 Aug 05:05 UTC   PREPARING TO RECORD",
+      "Mon 6 Aug 05:35 UTC   RECORDING STARTED",
+      "Mon 6 Aug 05:59 UTC   RECORDED 1 SEC",
+      "Mon 6 Aug 06:28 UTC   RECORDING STOPPED",
+    ].join("\n");
+    callbacks.success(text);
+  }, 1750);
 };
 
 function downloadImage(url, callbacks) {
@@ -77,8 +100,67 @@ function addROIEditingListeners(canvas) {
   canvas.addEventListener("mousedown", mouseClickHandler, false);
 }
 
+function setRecordingStatus(txt) {
+  $('#status-record').text(txt);
+}
+
+function recordCalibrationVideo(shelfId) {
+  var api = new ShanAPIClient();
+  setRecordingStatus('');
+  api.createCalibrationVideoRecordingJob(shelfId, {
+    success: function (calibrationVideo) {
+      console.log(calibrationVideo);
+      updateRecordingButton($('#btn-record'), false);
+      setRecordingStatus('Job created successfully.');
+    },
+    failure: function (error) {
+      console.error(error);
+      updateRecordingButton($('#btn-record'), false);
+      setRecordingStatus('ERROR: ' + error.message);
+    }
+  })
+}
+
+function onCalibrationVideoUpdate(calibrationVideo) {
+}
+
+function updateRecordingButton(btn, isRecording) {
+  if (isRecording) {
+    btn.removeClass('button3').addClass('button0');
+    btn.text('Recording...');
+  } else {
+    btn.removeClass('button0').addClass('button3');
+    btn.text('Record calibration video');
+  }
+}
+
+function setCameraLogsText(newText) {
+  $("#camera-logs").html(newText.split("\n").join("<br>"));
+}
+
+function updateCameraLogs(shelfId) {
+  var NUMBER_OF_LINES = 5;
+  var updateCameraLogsInterval = setInterval(function () {
+    var api = new ShanAPIClient();
+    api.getCameraLogs(shelfId, NUMBER_OF_LINES, {
+      success: function (newCameraLogsText) {
+        setCameraLogsText(newCameraLogsText);
+        setTimeout(function () {
+          updateCameraLogs(shelfId);
+        }, 250);
+      },
+      failure: function (error) {
+        console.error(error);
+        setCameraLogsText('ERROR:\n' + error.message);
+      }
+    })
+  }, 1000);
+}
+
 $(document).ready(function () {
+  var shelfId = $('[data-shelf-id]').data('shelf-id');
   var calibrationImageUrl = $('[data-calibration-image-url]').data('calibration-image-url');
+  updateCameraLogs(shelfId);
   downloadImage(calibrationImageUrl, {
     success: function (image) {
       var canvas = getCanvas();
@@ -103,5 +185,23 @@ $(document).ready(function () {
       alert(error.message);
       console.error('Failed to download calibration image!\nError:', error);
     }
-  })
+  });
+  /* Set buttons listeners */
+  $('#btn-record').on('click', function () {
+    updateRecordingButton($(this), true);
+    recordCalibrationVideo(shelfId)
+  });
+  var isViewingCameraLogs = false;
+  $('#camera-logs').hide();
+  $('#view-camera-logs').on('click', function () {
+    if (isViewingCameraLogs) {
+      $('#camera-logs').hide();
+      $('#view-camera-logs').text('View camera logs')
+      isViewingCameraLogs = false;
+    } else {
+      $('#camera-logs').show();
+      $('#view-camera-logs').text('Hide camera logs')
+      isViewingCameraLogs = true;
+    }
+  });
 });

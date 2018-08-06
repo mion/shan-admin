@@ -20,6 +20,18 @@ ShanAPIClient.prototype.createCalibrationVideoRecordingJob = function (shelfId, 
 };
 
 ShanAPIClient.prototype.createCalibrationTestJob = function (shelfId, callbacks) {
+  setTimeout(function () {
+    var date = new Date();
+    callbacks.success({
+      'calibration_test': {
+        'id': 1,
+        'creation_date': date.toDateString(),
+        'status': 'progress 0.85',
+        'creation_date': date.toDateString(),
+        'result_video_url': 'http://localhost:3601/test-result-12345678.mp4',
+      }
+    })
+  }, 1750);
 };
 
 ShanAPIClient.prototype.setCalibrationVideo = function (shelfId, calibrationVideoId, callbacks) {
@@ -104,6 +116,16 @@ function setRecordingStatus(txt) {
   $('#status-record').text(txt);
 }
 
+function updateTestButton(btn, isLoading) {
+  if (isLoading) {
+    btn.removeClass('button3').addClass('button0');
+    btn.text('Please wait...');
+  } else {
+    btn.removeClass('button0').addClass('button3');
+    btn.text('Run a test');
+  }
+}
+
 function recordCalibrationVideo(shelfId) {
   var api = new ShanAPIClient();
   setRecordingStatus('');
@@ -121,7 +143,17 @@ function recordCalibrationVideo(shelfId) {
   })
 }
 
-function onCalibrationVideoUpdate(calibrationVideo) {
+function runTest(shelfId, rois, params) {
+  var api = new ShanAPIClient();
+  api.createCalibrationTestJob(shelfId, {
+    success: function (calibrationTest) {
+      console.log(calibrationTest);
+      updateTestButton($('#btn-test'), )
+    },
+    failure: function (error) {
+      console.error(error);
+    }
+  })
 }
 
 function updateRecordingButton(btn, isRecording) {
@@ -203,5 +235,10 @@ $(document).ready(function () {
       $('#view-camera-logs').text('Hide camera logs')
       isViewingCameraLogs = true;
     }
+  });
+  $('#btn-test').on('click', function () {
+    updateTestButton($(this), true);
+    var canvas = getCanvas();
+    runTest(shelfId);
   });
 });

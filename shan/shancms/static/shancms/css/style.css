@@ -335,9 +335,9 @@ a.button0:hover {
 
 #canvas-message {
   font-family: 'IBM Plex Mono', monospace;
-  font-size: 13px;
+  font-size: 12px;
   line-height: 1.62em;
-  color: #333;
+  color: rgba(0, 0, 0, 0.69);
   padding-top: 14px;
 }
 

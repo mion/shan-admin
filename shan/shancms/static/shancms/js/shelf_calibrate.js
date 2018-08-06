@@ -34,7 +34,17 @@ ShanAPIClient.prototype.createCalibrationTestJob = function (shelfId, callbacks)
   }, 1750);
 };
 
-ShanAPIClient.prototype.setCalibrationVideo = function (shelfId, calibrationVideoId, callbacks) {
+ShanAPIClient.prototype.updateShelf = function (shelfId, calibrationVideoId, rois, params, callbacks) {
+  setTimeout(function () {
+    callbacks.success({
+      'shelf': {
+        'id': shelfId,
+        'calibration_video_id': calibrationVideoId,
+        'rois': rois,
+        'params': params
+      }
+    });
+  }, 1750);
 };
 
 ShanAPIClient.prototype.getCameraLogs = function (shelfId, numberOfLines, callbacks) {
@@ -151,7 +161,7 @@ function addROIEditingListeners(canvas) {
     renderMousePosition(canvas, relativeX, relativeY);
     renderMouseCursor(canvas, relativeX, relativeY);
     renderRois(canvas, canvas['shelfRoi'], canvas['aisleRoi']);
-    if (canvas['currentlyEditingRoi'] !== null) {
+    if (canvas['currentlyEditingRoi'] !== null && canvas.clicks.length > 0) {
       var w = relativeX - canvas['clicks'][0].x;
       var h = relativeY - canvas['clicks'][0].y;
       var ctx = getContext(canvas);
@@ -190,7 +200,7 @@ function addROIEditingListeners(canvas) {
           };
           canvas['currentlyEditingRoi'] = null;
           canvas['clicks'] = [];
-          console.log('Aisle ROI created:', canvas['shelfAisle']);
+          console.log('Aisle ROI created:', canvas['aisleRoi']);
         } else {
           throw new DOMException("unknown roi key: " + canvas['currentlyEditingRoi']);
         }
@@ -198,7 +208,7 @@ function addROIEditingListeners(canvas) {
         $('#canvas-message').text('✅ Region of interest updated.');
         setTimeout(function () {
           if (canvas['currentlyEditingRoi'] === null) {
-            $('#canvas-message').text('');
+            $('#canvas-message').text('You have unsaved changes.');
           }
         }, 3000);
         renderCalibrationImage(canvas, canvas['calibrationImage']);
@@ -290,14 +300,14 @@ function updateCameraLogs(shelfId) {
 function setEditingMode(currentlyEditingRoi) {
   if (currentlyEditingRoi === null) {
     $("#calibration-canvas").removeClass("cursor-none");
-    $("#btn-create").removeClass("button0").addClass('button1');
+    $("#btn-save").removeClass("button0").addClass('button1');
     $("#btn-test").removeClass("button0").addClass('button3');
     $("#btn-draw-aisle").removeClass("button0").addClass('button2');
     $("#btn-draw-shelf").removeClass("button0").addClass('button2');
     $("#btn-edit-params").removeClass("button0").addClass('button2');
   } else {
     $("#calibration-canvas").addClass("cursor-none");
-    $("#btn-create").removeClass("button1").addClass('button0');
+    $("#btn-save").removeClass("button1").addClass('button0');
     $("#btn-test").removeClass("button3").addClass('button0');
     $("#btn-draw-shelf").removeClass("button2").addClass('button0');
     $("#btn-draw-aisle").removeClass("button2").addClass('button0');
@@ -353,12 +363,18 @@ $(document).ready(function () {
     }
   });
   $('#btn-test').on('click', function () {
-    updateTestButton($(this), true);
     var canvas = getCanvas();
+    if (canvas.currentlyEditingRoi !== null) {
+      return;
+    }
+    updateTestButton($(this), true);
     runTest(shelfId);
   });
   $('#btn-draw-aisle').on('click', function (e) {
     var canvas = getCanvas();
+    if (canvas.currentlyEditingRoi !== null) {
+      return;
+    }
     canvas['currentlyEditingRoi'] = 'aisle';
     canvas['clicks'] = [];
     setEditingMode(canvas.currentlyEditingRoi);
@@ -367,9 +383,58 @@ $(document).ready(function () {
   });
   $('#btn-draw-shelf').on('click', function (e) {
     var canvas = getCanvas();
+    if (canvas.currentlyEditingRoi !== null) {
+      return;
+    }
     canvas['currentlyEditingRoi'] = 'shelf';
     canvas['clicks'] = [];
     setEditingMode(canvas.currentlyEditingRoi);
     console.log(e);
+  });
+  $('#btn-save').on('click', function (e) {
+    var canvas = getCanvas();
+    if (canvas.currentlyEditingRoi !== null) {
+      return;
+    }
+    var confirmed = confirm('Are you sure you want to save?');
+    if (confirmed) {
+      var api = new ShanAPIClient();
+      var calibrationVideoId = parseInt($('#calib-video-select').val());
+      console.log('calibration video ID = ', calibrationVideoId);
+      var rois = [
+        {
+          type: 'shelf',
+          x: canvas['shelfRoi'].x,
+          y: canvas['shelfRoi'].y,
+          width: canvas['shelfRoi'].width,
+          height: canvas['shelfRoi'].height
+        },
+        {
+          type: 'aisle',
+          x: canvas['aisleRoi'].x,
+          y: canvas['aisleRoi'].y,
+          width: canvas['aisleRoi'].width,
+          height: canvas['aisleRoi'].height
+        },
+      ];
+      console.log('regions of interest = ', rois);
+      var params = $('#calib-params').text();
+      console.log('parameters = ', params);
+      $('#btn-save').removeClass('button1').addClass('button0');
+      $('#canvas-message').text('Saving, please wait...');
+      api.updateShelf(shelfId, calibrationVideoId, rois, params, {
+        success: function (shelf) {
+          $('#btn-save').removeClass('button0').addClass('button1');
+          $('#canvas-message').text('✓ Saved successfully.');
+          alert('Your changes were saved successfully.');
+        },
+        failure: function (error) {
+          console.error(error);
+          $('#btn-save').removeClass('button0').addClass('button1');
+          $('#canvas-message').text('⚠️ An error occurred and your changes have not been saved.');
+          alert('The app could not establish a connection to the server, and it is not your fault. Please try again later.');
+        }
+      });
+    }
   });
 });

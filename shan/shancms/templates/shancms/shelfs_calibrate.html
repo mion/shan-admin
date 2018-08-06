@@ -42,8 +42,22 @@
     </div>
     <div class="main">
       <h1>Calibrate a shelf</h1>
+      <p>Use the buttons below to draw regions of interest (<b>shelf</b> or <b>aisle</b>).</p>
+      <div class="v-space-1grem"></div>
+      <canvas id="calibration-canvas"></canvas>
+      <div id="canvas-message">
+      </div>
+      <br>
+      <!-- <div class="v-space-1grem"></div> -->
+      <a id="btn-save" class="button1" href="#">Save</a>
+      <a id="btn-draw-aisle" class="button2" href="#">Draw aisle</a>
+      <a id="btn-draw-shelf" class="button2" href="#">Draw shelf</a>
+      <a id="btn-edit-params" class="button2" href="#open-modal">Edit params</a>
+      <div class="v-space-1grem"></div>
+      <hr>
+      <h1>Record video</h1>
       <p>
-        <label for="calib-video-select">Choose a calibration video:  </label>
+        <label for="calib-video-select">Choose a recording to load above:  </label>
         <select id="calib-video-select">
             <option value="{{ my_calibration_video.id }}">{{ my_calibration_video.recording_date }}</option>
             {% for calib_video in other_calibration_videos %}
@@ -51,28 +65,18 @@
             {% endfor %}
         </select>
       </p>
-      <a id="view-camera-logs" href="#" class="link">View camera logs</a>
+      <div class="v-space-1grem"></div>
+      <a id="btn-record" class="button3" href="#">Record calibration video</a>
+      <a id="view-camera-logs" href="#" class="button2">View camera logs</a>
       <div id="camera-logs">
         Lorem ipsum dolor sit amet consectetur adipisicing elit. Facilis, dignissimos quae? Neque quod, natus minus alias dolorum adipisci eaque porro deserunt delectus autem quam optio quia pariatur ex maiores quibusdam.
       </div>
-      <div class="v-space-1grem"></div>
-      <a id="btn-record" class="button3" href="#">Record calibration video</a>
+      <br>
       <span id="status-record">
       </span>
       <div class="v-space-1grem"></div>
-      <canvas id="calibration-canvas"></canvas>
-      <div id="canvas-message">
-      </div>
-      <div class="v-space-1grem"></div>
-      <a id="btn-save" class="button1" href="#">Save</a>
-      <a id="btn-test" class="button3" href="#">Run a test</a>
-      <a id="btn-draw-aisle" class="button2" href="#">Draw aisle</a>
-      <a id="btn-draw-shelf" class="button2" href="#">Draw shelf</a>
-      <a id="btn-edit-params" class="button2" href="#open-modal">Edit params</a>
-      <div class="v-space-1grem"></div>
       <hr>
-      <div class="v-space-1grem"></div>
-      <h2>Tests results</h2>
+      <h1>Results</h1>
       <p>Found {{ tests_count }} test results.</p>
       <div class="v-space-1grem"></div>
       <div class="test-list">
@@ -84,6 +88,8 @@
         </div>
         {% endfor %}
       </div>
+      <div class="v-space-1grem"></div>
+      <a id="btn-test" class="button3" href="#">Run a test</a>
     </div>
     <div class="footer">
       Copyright © 2018 TonetoLabs, Inc.<br>All rights reserved.

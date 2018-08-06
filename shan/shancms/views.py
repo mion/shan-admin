@@ -78,18 +78,21 @@ def shelfs_calibrate(request, venue_id, shelf_id):
         'my_calibration_video': {
             'id': 1,
             'recording_date': '2018/08/01 14:15 (UTC)',
-            'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4'
+            'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4',
+            'video_calibration_image_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.jpg',
         },
         'other_calibration_videos': [
             {
                 'id': 2,
                 'recording_date': '2018/07/31 17:58 (UTC)',
-                'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4'
+                'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4',
+                'video_calibration_image_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.jpg',
             },
             {
                 'id': 3,
                 'recording_date': '2018/07/31 16:29 (UTC)',
-                'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4'
+                'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4',
+                'video_calibration_image_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.jpg',
             }
         ],
         'current_user': {

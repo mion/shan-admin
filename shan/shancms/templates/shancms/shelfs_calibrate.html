@@ -6,6 +6,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'shancms/css/style.css' %}">
   </head>
   <body>
+    <div data-calibration-image-url="{{ my_calibration_video.video_calibration_image_url }}" hidden="true"></div>
     <div data-shelf-id="{{ shelf.id }}" hidden="true"></div>
     <div class="navbar-bg">
       <div class="navbar-container">
@@ -35,10 +36,8 @@
         </select>
       </p>
       <div class="v-space-1grem"></div>
-      <video src="http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4"></video>
-      <!-- <div class="calibration-videos">
-        <a href="#">Video 2018/08/01 14:15 (UTC)</a>
-      </div> -->
+      <!-- <img id="calibration-image" src="{{ my_calibration_video.video_calibration_image_url }}"></img> -->
+      <canvas id="calibration-canvas"></canvas>
       <br>
       <br>
       <br>
@@ -49,5 +48,6 @@
       Copyright © 2018 TonetoLabs, Inc.<br>All rights reserved.
     </div>
     <script src="{% static 'shancms/js/jquery-3.3.1.min.js' %}"></script>
+    <script src="{% static 'shancms/js/shelf_calibrate.js' %}"></script>
   </body>
 </html>

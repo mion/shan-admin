@@ -1,5 +1,9 @@
 console.log('Starting script "shelf_calibrate.js"...');
 
+/*********************************************************************
+/* API Client
+ *********************************************************************/
+
 var ShanAPIClient = function() {
   this.baseUrl = 'http://localhost:8000/shancms';
   return this;
@@ -59,6 +63,10 @@ ShanAPIClient.prototype.getCameraLogs = function (shelfId, numberOfLines, callba
   }, 1750);
 };
 
+/*********************************************************************
+/* Data handling
+ *********************************************************************/
+
 function downloadImage(url, callbacks) {
   var image = new Image();
   image.addEventListener('load', function () {
@@ -69,6 +77,59 @@ function downloadImage(url, callbacks) {
   }, false);
   image.src = url;
 }
+
+function recordCalibrationVideo(shelfId) {
+  var api = new ShanAPIClient();
+  setRecordingStatus('');
+  api.createCalibrationVideoRecordingJob(shelfId, {
+    success: function (calibrationVideo) {
+      console.log(calibrationVideo);
+      updateRecordingButton($('#btn-record'), false);
+      setRecordingStatus('Job created successfully.');
+    },
+    failure: function (error) {
+      console.error(error);
+      updateRecordingButton($('#btn-record'), false);
+      setRecordingStatus('ERROR: ' + error.message);
+    }
+  })
+}
+
+function runTest(shelfId, rois, params) {
+  var api = new ShanAPIClient();
+  api.createCalibrationTestJob(shelfId, {
+    success: function (calibrationTest) {
+      console.log(calibrationTest);
+      updateTestButton($('#btn-test'), )
+    },
+    failure: function (error) {
+      console.error(error);
+    }
+  })
+}
+
+function updateCameraLogs(shelfId) {
+  var NUMBER_OF_LINES = 5;
+  var updateCameraLogsInterval = setInterval(function () {
+    var api = new ShanAPIClient();
+    api.getCameraLogs(shelfId, NUMBER_OF_LINES, {
+      success: function (newCameraLogsText) {
+        setCameraLogsText(newCameraLogsText);
+        setTimeout(function () {
+          updateCameraLogs(shelfId);
+        }, 250);
+      },
+      failure: function (error) {
+        console.error(error);
+        setCameraLogsText('ERROR:\n' + error.message);
+      }
+    })
+  }, 1000);
+}
+
+/*********************************************************************
+/* UI
+ *********************************************************************/
 
 function getCanvas() {
   return document.getElementById('calibration-canvas');
@@ -111,24 +172,27 @@ function renderMouseCursor(canvas, x, y) {
     return;
   }
   var ctx = getContext(canvas);
+  // crosshair
   var CROSSHAIR_THICKNESS = 1;
   var CROSSHAIR_SIZE = 16;
   ctx.fillStyle = 'rgb(0, 255, 0)';
   ctx.fillRect(x - (CROSSHAIR_SIZE / 2), y - (CROSSHAIR_THICKNESS / 2), CROSSHAIR_SIZE, CROSSHAIR_THICKNESS);
   ctx.fillRect(x - (CROSSHAIR_THICKNESS / 2), y - (CROSSHAIR_SIZE / 2), CROSSHAIR_THICKNESS, CROSSHAIR_SIZE);
-
+  // vertical guide
   ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
   ctx.beginPath();
   ctx.moveTo(x, 0);
   ctx.lineTo(x, canvas.height);
   ctx.stroke();
   ctx.closePath();
+  // horizontal guide
   ctx.beginPath();
   ctx.moveTo(0, y);
   ctx.lineTo(canvas.width, y);
   ctx.stroke();
   ctx.closePath();
 }
+
 
 function renderRois(canvas, shelfRoi, aisleRoi) {
   var PADDING = 20;
@@ -234,36 +298,6 @@ function updateTestButton(btn, isLoading) {
   }
 }
 
-function recordCalibrationVideo(shelfId) {
-  var api = new ShanAPIClient();
-  setRecordingStatus('');
-  api.createCalibrationVideoRecordingJob(shelfId, {
-    success: function (calibrationVideo) {
-      console.log(calibrationVideo);
-      updateRecordingButton($('#btn-record'), false);
-      setRecordingStatus('Job created successfully.');
-    },
-    failure: function (error) {
-      console.error(error);
-      updateRecordingButton($('#btn-record'), false);
-      setRecordingStatus('ERROR: ' + error.message);
-    }
-  })
-}
-
-function runTest(shelfId, rois, params) {
-  var api = new ShanAPIClient();
-  api.createCalibrationTestJob(shelfId, {
-    success: function (calibrationTest) {
-      console.log(calibrationTest);
-      updateTestButton($('#btn-test'), )
-    },
-    failure: function (error) {
-      console.error(error);
-    }
-  })
-}
-
 function updateRecordingButton(btn, isRecording) {
   if (isRecording) {
     btn.removeClass('button3').addClass('button0');
@@ -276,25 +310,6 @@ function updateRecordingButton(btn, isRecording) {
 
 function setCameraLogsText(newText) {
   $("#camera-logs").html(newText.split("\n").join("<br>"));
-}
-
-function updateCameraLogs(shelfId) {
-  var NUMBER_OF_LINES = 5;
-  var updateCameraLogsInterval = setInterval(function () {
-    var api = new ShanAPIClient();
-    api.getCameraLogs(shelfId, NUMBER_OF_LINES, {
-      success: function (newCameraLogsText) {
-        setCameraLogsText(newCameraLogsText);
-        setTimeout(function () {
-          updateCameraLogs(shelfId);
-        }, 250);
-      },
-      failure: function (error) {
-        console.error(error);
-        setCameraLogsText('ERROR:\n' + error.message);
-      }
-    })
-  }, 1000);
 }
 
 function setEditingMode(currentlyEditingRoi) {

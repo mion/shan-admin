@@ -24,7 +24,7 @@
     </div>
     <div class="main">
       <div class="v-space-1grem"></div>
-      <a href="{% url 'shancms:venues_list' %}" class="link">← Back to venues</a>
+      <a href="{% url 'shancms:venue_list' %}" class="link">← Back to venues</a>
       <h1>{{ venue.name }}</h1>
       <p>Found {{ shelves_count }} shelves.</p>
       <div class="v-space-1grem"></div>
@@ -40,7 +40,7 @@
           {% endif %}
           <span style="color: gray">({{ shelf.status_time }})</span>
           <br>
-          <a href="{% url 'shancms:shelfs_detail' venue.id shelf.id %}" class="link right">View shelf</a>
+          <a href="{% url 'shancms:shelf_detail' venue.id shelf.id %}" class="link right">View shelf</a>
           <br>
         </div>
       {% endfor %}

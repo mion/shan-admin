@@ -5,7 +5,7 @@ import json
 
 from .models import Event
 
-def venues_list(request):
+def venue_list(request):
     ctx = {
         'current_user': {
             'email': 'gluisvieira@gmail.com'
@@ -24,9 +24,9 @@ def venues_list(request):
             },
         ]
     }
-    return render(request, 'shancms/venues_list.html', ctx)
+    return render(request, 'shancms/venue_list.html', ctx)
 
-def venues_detail(request, venue_id):
+def venue_detail(request, venue_id):
     ctx = {
         'current_user': {
             'email': 'gluisvieira@gmail.com'
@@ -51,9 +51,9 @@ def venues_detail(request, venue_id):
             }
         ]
     }
-    return render(request, 'shancms/venues_detail.html', ctx)
+    return render(request, 'shancms/venue_detail.html', ctx)
 
-def shelfs_detail(request, venue_id, shelf_id):
+def shelf_detail(request, venue_id, shelf_id):
     ctx = {
         'shelf': {'id': 1},
         'venue': {
@@ -66,9 +66,9 @@ def shelfs_detail(request, venue_id, shelf_id):
         'first_date': 'Mon 6 Aug, 2018',
         'last_date': 'Mon 9 Dec, 2018',
     }
-    return render(request, 'shancms/shelfs_detail.html', ctx)
+    return render(request, 'shancms/shelf_detail.html', ctx)
 
-def shelfs_calibrate(request, venue_id, shelf_id):
+def shelf_edit(request, venue_id, shelf_id):
     ctx = {
         'shelf': {'id': 1},
         'venue': {
@@ -120,7 +120,7 @@ def shelfs_calibrate(request, venue_id, shelf_id):
             'email': 'gluisvieira@gmail.com'
         },
     }
-    return render(request, 'shancms/shelfs_calibrate.html', ctx)
+    return render(request, 'shancms/shelf_edit.html', ctx)
 
 def get_events(request):
     shelf_id_str = request.GET.get('shelf_id', None)

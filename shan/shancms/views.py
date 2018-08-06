@@ -81,6 +81,14 @@ def shelfs_calibrate(request, venue_id, shelf_id):
             'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4',
             'video_calibration_image_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.jpg',
         },
+        'tests_count': 2,
+        'tests': [
+            {
+                'status': 'progress 0.85',
+                'creation_date': '2018/08/01 12:30 (UTC)',
+                'result_video_url': 'http://localhost:3601/test-result-12345678.mp4',
+            }
+        ],
         'other_calibration_videos': [
             {
                 'id': 2,

@@ -1,5 +1,19 @@
 console.log('Starting script "shelf_calibrate.js"...');
 
+var ShanAPIClient = function() {
+  this.baseUrl = 'http://localhost:8000/shancms';
+  return this;
+};
+
+ShanAPIClient.prototype.createCalibrationVideoRecordingJob = function (shelfId, callbacks) {
+};
+
+ShanAPIClient.prototype.createCalibrationTestJob = function (shelfId, callbacks) {
+};
+
+ShanAPIClient.prototype.setCalibrationVideo = function (shelfId, calibrationVideoId, callbacks) {
+};
+
 function downloadImage(url, callbacks) {
   var image = new Image();
   image.addEventListener('load', function () {
@@ -34,7 +48,7 @@ function renderMousePosition(canvas, x, y) {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   renderCalibrationImage(ctx, canvas.calibrationImage);
   ctx.font = '13px sans-serif';
-  ctx.fillStyle = 'rgba(255, 255, 255, 0.55)';
+  ctx.fillStyle = 'rgba(255, 255, 255, 0.67)';
   ctx.fillText('(' + x + ',' + y + ')', x, y);
 }
 
@@ -79,6 +93,9 @@ $(document).ready(function () {
 
       // FIXME: This is very bad.
       canvas['calibrationImage'] = image;
+      canvas['currentlyEditingRoi'] = null;
+      canvas['shelfRoi'] = {x: 0, y: 0, width: 100, height: 100};
+      canvas['aisleRoi'] = {x: 0, y: 0, width: 100, height: 100};
       addROIEditingListeners(canvas);
       console.log('ROI editing listeners are ready.');
     },

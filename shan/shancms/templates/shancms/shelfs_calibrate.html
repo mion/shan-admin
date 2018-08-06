@@ -36,13 +36,29 @@
         </select>
       </p>
       <div class="v-space-1grem"></div>
-      <!-- <img id="calibration-image" src="{{ my_calibration_video.video_calibration_image_url }}"></img> -->
+      <a id="btn-record" class="button3" href="#">Record calibration video</a>
+      <div class="v-space-1grem"></div>
       <canvas id="calibration-canvas"></canvas>
-      <br>
-      <br>
-      <br>
+      <div class="v-space-1grem"></div>
       <a id="btn-create" class="button1" href="#">Save</a>
-      <a id="btn-cancel" class="button2" href="#">Cancel</a>
+      <a id="btn-test" class="button3" href="#">Run a test</a>
+      <a id="btn-draw-aisle" class="button2" href="#">Draw aisle region</a>
+      <a id="btn-draw-region" class="button2" href="#">Draw shelf region</a>
+      <div class="v-space-1grem"></div>
+      <hr>
+      <div class="v-space-1grem"></div>
+      <h2>Tests results</h2>
+      <p>Found {{ tests_count }} test results.</p>
+      <div class="v-space-1grem"></div>
+      <div class="test-list">
+        {% for test in tests %}
+        <div class="test-item">
+          <div class="test-status">{{ test.status }}</div>
+          <div class="test-creation-date">{{ test.creation_date }}</div>
+          <div class="test-result"><a href="{{ test.result_video_url }}" target="_blank" class="link">Open video</a></div>
+        </div>
+        {% endfor %}
+      </div>
     </div>
     <div class="footer">
       Copyright © 2018 TonetoLabs, Inc.<br>All rights reserved.

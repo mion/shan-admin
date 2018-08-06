@@ -125,7 +125,14 @@ h1 {
   margin: 0;
   padding: 0;
   font-size: 2.3em;
-  margin-top: 1.62em;
+  margin-top: 1.22em;
+}
+
+h2 {
+  margin: 0;
+  padding: 0;
+  font-size: 1.67em;
+  /* margin-bottom: 0.6em; */
 }
 
 p {
@@ -179,7 +186,7 @@ p {
 
 a.button1 {
   display:inline-block;
-  padding:0.35em 1.2em;
+  padding:0.82em 1.68em;
   border:0.1em solid #FFFFFF;
   margin:0 0.3em 0.3em 0;
   border-radius:0.3em;
@@ -199,7 +206,7 @@ a.button1:hover {
 
 a.button2 {
   display:inline-block;
-  padding:0.35em 1.2em;
+  padding:0.82em 1.68em;
   border:0.1em solid #FFFFFF;
   margin:0 0.3em 0.3em 0;
   border-radius:0.3em;
@@ -217,9 +224,66 @@ a.button2:hover {
   background-color:#6c6c6c;
 }
 
+a.button3 {
+  display:inline-block;
+  padding:0.82em 1.68em;
+  border:0.1em solid #FFFFFF;
+  margin:0 0.3em 0.3em 0;
+  border-radius:0.3em;
+  box-sizing: border-box;
+  text-decoration:none;
+  font-weight:300;
+  color:#FFFFFF;
+  background-color:#008800;
+  text-align:center;
+  transition: all 0.2s;
+}
+
+a.button3:hover {
+  color:#DDD;
+  background-color:#22AA22;
+}
+
 @media all and (max-width:30em){
-  a.button1, a.button2 {
+  a.button1, a.button2, a.button3 {
     display:block;
     margin:0.4em auto;
   }
+}
+
+/* Calibrate */
+
+.test-list {
+  border: 1px solid #999;
+  border-radius: 1px;
+}
+
+.test-item {
+  padding: 20px;
+  background-color: #F6F6F6;
+}
+
+.test-item > div {
+  padding-left: 10px;
+}
+
+.test-status {
+  width: 20%;
+  /* border-right: 1px solid #888; */
+  display: inline-block;
+  font-family: monospace;
+}
+
+.test-creation-date {
+  width: 50%;
+  /* border-right: 1px solid #888; */
+  display: inline-block;
+  font-family: monospace;
+  text-align: center;
+}
+
+.test-result {
+  width: 20%;
+  display: inline-block;
+  text-align: right;
 }

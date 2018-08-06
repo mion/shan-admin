@@ -74,17 +74,23 @@ function resizeCanvas(canvas, width, height) {
   return canvas;
 }
 
-function renderCalibrationImage(ctx, img) {
-  ctx.drawImage(img, 0, 0);
+function renderCalibrationImage(canvas, img) {
+  return getContext(canvas).drawImage(img, 0, 0);
+}
+
+function erase(canvas) {
+  var ctx = getContext(canvas);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  return canvas;
 }
 
 function renderMousePosition(canvas, x, y) {
+  var PADDING = 10;
   var ctx = getContext(canvas);
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  renderCalibrationImage(ctx, canvas.calibrationImage);
+  renderCalibrationImage(canvas, canvas.calibrationImage);
   ctx.font = '13px sans-serif';
   ctx.fillStyle = 'rgba(255, 255, 255, 0.67)';
-  ctx.fillText('(' + x + ',' + y + ')', x, y);
+  ctx.fillText('(' + x + ',' + y + ')', x + PADDING, y + 2*PADDING);
 }
 
 function renderMouseCursor(canvas, x, y) {
@@ -96,17 +102,76 @@ function renderMouseCursor(canvas, x, y) {
   ctx.fillRect(x - (CROSSHAIR_THICKNESS / 2), y - (CROSSHAIR_SIZE / 2), CROSSHAIR_THICKNESS, CROSSHAIR_SIZE);
 }
 
+function renderRois(canvas, shelfRoi, aisleRoi) {
+  var PADDING = 20;
+  var ctx = getContext(canvas);
+  if (aisleRoi) {
+    ctx.fillStyle = 'rgba(255, 155, 0, 0.45)';
+    ctx.fillRect(aisleRoi.x, aisleRoi.y, aisleRoi.width, aisleRoi.height);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+    ctx.strokeRect(aisleRoi.x, aisleRoi.y, aisleRoi.width, aisleRoi.height);
+    ctx.fillStyle = 'rgba(255, 255, 255, 1.00)';
+    ctx.fillText('Aisle', aisleRoi.x + PADDING/2, aisleRoi.y + PADDING);
+  }
+  if (shelfRoi) {
+    ctx.fillStyle = 'rgba(255, 0, 0, 0.45)';
+    ctx.fillRect(shelfRoi.x, shelfRoi.y, shelfRoi.width, shelfRoi.height);
+    ctx.strokeStyle = 'rgba(255, 255, 255, 0.95)';
+    ctx.strokeRect(shelfRoi.x, shelfRoi.y, shelfRoi.width, shelfRoi.height);
+    ctx.font = '13px sans-serif';
+    ctx.fillStyle = 'rgba(255, 255, 255, 1.00)';
+    ctx.fillText('Shelf', shelfRoi.x + PADDING/2, shelfRoi.y + PADDING);
+  }
+}
+
 function addROIEditingListeners(canvas) {
   var mouseMoveHandler = function(e) {
     var relativeX = e.clientX - canvas.offsetLeft;
     var relativeY = e.clientY - canvas.offsetTop;
-    renderMousePosition(canvas, relativeX + 10, relativeY + 15);
+    erase(canvas);
+    renderCalibrationImage(canvas, canvas['calibrationImage']);
+    renderMousePosition(canvas, relativeX, relativeY);
     renderMouseCursor(canvas, relativeX, relativeY);
+    renderRois(canvas, canvas['shelfRoi'], canvas['aisleRoi']);
   };
   var mouseClickHandler = function(e) {
     var relativeX = e.clientX - canvas.offsetLeft;
-    var relativeY = e.clientY - canvas.offsetTop;
+    var relativeY = e.clientY - canvas.offsetTop; // - document.body.scrollTop;
     console.log('Mouse click at (x, y):', relativeX, relativeY);
+    console.log(e);
+    if (canvas['currentlyEditingRoi'] !== null) {
+      if (canvas['clicks'].length === 0) {
+        canvas['clicks'].push({x: relativeX, y: relativeY});
+      } else if (canvas['clicks'].length === 1) {
+        var w = relativeX - canvas['clicks'][0].x;
+        var h = relativeY - canvas['clicks'][0].y;
+        if (canvas['currentlyEditingRoi'] === 'shelf') {
+          canvas['shelfRoi'] = {
+            x: canvas['clicks'][0].x,
+            y: canvas['clicks'][0].y,
+            width: w,
+            height: h
+          };
+          canvas['currentlyEditingRoi'] = null;
+          canvas['clicks'] = [];
+          console.log('Shelf ROI created:', canvas['shelfRoi']);
+        } else if (canvas['currentlyEditingRoi'] === 'aisle') {
+          canvas['aisleRoi'] = {
+            x: canvas['clicks'][0].x,
+            y: canvas['clicks'][0].y,
+            width: w,
+            height: h
+          };
+          canvas['currentlyEditingRoi'] = null;
+          canvas['clicks'] = [];
+          console.log('Aisle ROI created:', canvas['shelfAisle']);
+        } else {
+          throw new DOMException("unknown roi key: " + canvas['currentlyEditingRoi']);
+        }
+        renderCalibrationImage(canvas, canvas['calibrationImage']);
+        renderRois(canvas, canvas['shelfRoi'], canvas['aisleRoi']);
+      }
+    }
   };
   canvas.addEventListener("mousemove", mouseMoveHandler, false);
   canvas.addEventListener("mousedown", mouseClickHandler, false);
@@ -202,14 +267,14 @@ $(document).ready(function () {
       resizeCanvas(canvas, image.width, image.height);
       console.log('Canvas resized to width/height: ', image.width, image.height);
 
-      renderCalibrationImage(context, image);
+      renderCalibrationImage(canvas, image);
       console.log('Calibration image rendered.');
 
       // FIXME: This is very bad.
       canvas['calibrationImage'] = image;
       canvas['currentlyEditingRoi'] = null;
-      canvas['shelfRoi'] = {x: 0, y: 0, width: 100, height: 100};
-      canvas['aisleRoi'] = {x: 0, y: 0, width: 100, height: 100};
+      canvas['shelfRoi'] = {x: 0, y: 0, width: 0, height: 0};
+      canvas['aisleRoi'] = {x: 0, y: 0, width: 0, height: 0};
       addROIEditingListeners(canvas);
       console.log('ROI editing listeners are ready.');
     },
@@ -240,5 +305,17 @@ $(document).ready(function () {
     updateTestButton($(this), true);
     var canvas = getCanvas();
     runTest(shelfId);
+  });
+  $('#btn-draw-aisle').on('click', function (e) {
+    var canvas = getCanvas();
+    canvas['currentlyEditingRoi'] = 'aisle';
+    canvas['clicks'] = [];
+    console.log(e);
+  });
+  $('#btn-draw-shelf').on('click', function (e) {
+    var canvas = getCanvas();
+    canvas['currentlyEditingRoi'] = 'shelf';
+    canvas['clicks'] = [];
+    console.log(e);
   });
 });

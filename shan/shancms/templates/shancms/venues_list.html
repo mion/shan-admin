@@ -10,9 +10,9 @@
     <div class="navbar-bg">
       <div class="navbar-container">
         <div class="left">
-          <div class="logo">
+          <a class="logo" href="/shancms">
             Shelf Analytics
-          </div>
+          </a>
         </div>
         <div class="middle"></div>
         <div class="right">
@@ -26,16 +26,20 @@
     <div class="main">
       <h1>Venues</h1>
       <p>Found {{ venues_count }} venues.</p>
+      <div class="v-space-1grem"></div>
       <div class="venues">
       {% for venue in venues %}
         <div class="venue">
           <b>{{ venue.name }}</b>
-          <br>
+          <hr>
           {{ venue.address }}
+          <br>
           <a href="{% url 'shancms:venues_detail' venue.id %}" class="link right">View venue</a>
+          <br>
         </div>
       {% endfor %}
       </div>
+      <a id="btn-create" class="button1" href="#">Create venue</a>
     </div>
     <div class="footer">
       Copyright © 2018 TonetoLabs, Inc.<br>All rights reserved.

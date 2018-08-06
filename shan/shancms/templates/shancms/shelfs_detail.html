@@ -8,16 +8,28 @@
   </head>
   <body>
     <div data-shelf-id="{{ shelf_id }}" hidden="true"></div>
-    <div class="navbar">
-      <div>
-        Shelf Analytics
+    <div class="navbar-bg">
+      <div class="navbar-container">
+        <div class="left">
+          <a class="logo" href="/shancms">
+            Shelf Analytics
+          </a>
+        </div>
+        <div class="middle"></div>
+        <div class="right">
+          <div class="account">
+            {{ current_user.email }}
+            <a href='#'>(sair da conta)</a>
+          </div>
+        </div>
       </div>
     </div>
     <div class="main">
-      <!-- <div>
-        <a href="#">Prezunic</a> > Shelf Beverages
-      </div> -->
+      <div class="v-space-1grem"></div>
+      <a href="{% url 'shancms:venues_detail' venue.id %}" class="link">← Back to shelves</a>
       <h1>Events</h1>
+      <p>Found events from <b>{{ first_date}}</b> until <b>{{ last_date }}</b>.</p>
+      <div class="v-space-1grem"></div>
       <div id="loading-container" hidden="false"></div>
       <div id="error-container" hidden="true"></div>
       <div id="chart-container">
@@ -54,6 +66,10 @@
         </fieldset>
         <br/>
         <a id="btn-reload" class="button1" href="#">Reload chart</a>
+        <a id="btn-calibrate" class="button2" href="#">Calibrate</a>
+      </div>
+      <div class="footer">
+        Copyright © 2018 TonetoLabs, Inc.<br>All rights reserved.
       </div>
     </div>
     <script src="{% static 'shancms/js/jquery-3.3.1.min.js' %}"></script>

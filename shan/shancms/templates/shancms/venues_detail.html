@@ -10,9 +10,9 @@
     <div class="navbar-bg">
       <div class="navbar-container">
         <div class="left">
-          <div class="logo">
+          <a class="logo" href="/shancms">
             Shelf Analytics
-          </div>
+          </a>
         </div>
         <div class="middle"></div>
         <div class="right">
@@ -24,16 +24,29 @@
       </div>
     </div>
     <div class="main">
-      <h1>{{ venue.name }} > Shelves </h1>
+      <div class="v-space-1grem"></div>
+      <a href="{% url 'shancms:venues_list' %}" class="link">← Back to venues</a>
+      <h1>{{ venue.name }}</h1>
       <p>Found {{ shelves_count }} shelves.</p>
+      <div class="v-space-1grem"></div>
       <div class="venues">
       {% for shelf in shelves %}
         <div class="venue">
           <b>{{ shelf.name }}</b>
+          <hr>
+          {% if shelf.status == 'online' %}
+            <span style="color: green">✅ Online</span>
+          {% else %}
+            <span style="color: red">⚠️ OFFLINE</span>
+          {% endif %}
+          <span style="color: gray">({{ shelf.status_time }})</span>
+          <br>
           <a href="{% url 'shancms:shelfs_detail' venue.id shelf.id %}" class="link right">View shelf</a>
+          <br>
         </div>
       {% endfor %}
       </div>
+      <a id="btn-create" class="button1" href="#">Create shelf</a>
     </div>
     <div class="footer">
       Copyright © 2018 TonetoLabs, Inc.<br>All rights reserved.

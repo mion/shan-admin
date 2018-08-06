@@ -28,6 +28,9 @@ def venues_list(request):
 
 def venues_detail(request, venue_id):
     ctx = {
+        'current_user': {
+            'email': 'gluisvieira@gmail.com'
+        },
         'venue': {
             'id': 1,
             'name': 'Prezunic'
@@ -36,18 +39,33 @@ def venues_detail(request, venue_id):
         'shelves': [
             {
                 'id': 1,
-                'name': 'CORREDOR GARRAFAS PET 2L'
+                'name': 'CORREDOR GARRAFAS PET 2L',
+                'status': 'online',
+                'status_time': '11 days'
             },
             {
                 'id': 2,
-                'name': 'GONDOLA PREMIUM COCA-COLA'
+                'name': 'GONDOLA PREMIUM COCA-COLA',
+                'status': 'offline',
+                'status_time': '2 hours'
             }
         ]
     }
     return render(request, 'shancms/venues_detail.html', ctx)
 
 def shelfs_detail(request, venue_id, shelf_id):
-    ctx = {'shelf_id': 1}
+    ctx = {
+        'shelf_id': 1,
+        'venue': {
+            'id': 1,
+            'name': 'Prezunic'
+        },
+        'current_user': {
+            'email': 'gluisvieira@gmail.com'
+        },
+        'first_date': 'Mon 6 Aug, 2018',
+        'last_date': 'Mon 9 Dec, 2018',
+    }
     return render(request, 'shancms/shelfs_detail.html', ctx)
 
 def get_events(request):

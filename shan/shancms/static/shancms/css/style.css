@@ -6,9 +6,11 @@
 
 html {
   font-family: 'Lato', 'Arial', sans-serif;
+  font-size: 16px;
 }
 
 body {
+  position: relative;
   padding: 0;
   margin: 0;
   background-color: #FDFDFE;
@@ -20,17 +22,24 @@ body {
 }
 
 .footer {
-  height: 10%;
-  position: fixed;
+  position: relative;
+  right: 0;
   bottom: 0;
   left: 0;
+  padding-top: 3.24em;
+  padding-bottom: 2em;
   width: 100%;
   text-align: center;
-  font-size: 12px;
+  font-size: 0.8em;
   color: rgba(0, 0, 0, .42);
 }
 
 /* Utils */
+
+.v-space-1grem {
+  width: 100%;
+  height: 1.62em;
+}
 
 .right {
   float: right;
@@ -44,6 +53,10 @@ a.link {
 a.link:hover {
   color: #22BBFF;
   text-decoration: underline;
+}
+
+hr {
+  color: rgba(0, 0, 0, 0.16);
 }
 
 /* Navigation Bar */
@@ -77,6 +90,8 @@ a.link:hover {
 }
 
 .logo {
+  text-decoration: none;
+  color: #FFF;
   display: inline;
 }
 
@@ -106,6 +121,20 @@ a.link:hover {
 
 /* Text */
 
+h1 {
+  margin: 0;
+  padding: 0;
+  font-size: 2.3em;
+  margin-top: 1.62em;
+}
+
+p {
+  margin: 0;
+  padding: 0;
+  font-size: 15px;
+  margin-top: 0.61em;
+}
+
 .text-normal {
   font-size: 15px;
 }
@@ -119,6 +148,8 @@ a.link:hover {
 
 .fieldset {
   padding: 16px;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 4px;
 }
 
 .fieldset > div {
@@ -128,6 +159,8 @@ a.link:hover {
 #agg-fieldset > div {
   display: inline;
 }
+
+/* Buttons */
 
 a.button1 {
   display:inline-block;
@@ -149,8 +182,28 @@ a.button1:hover {
   background-color:#2288BB;
 }
 
+a.button2 {
+  display:inline-block;
+  padding:0.35em 1.2em;
+  border:0.1em solid #FFFFFF;
+  margin:0 0.3em 0.3em 0;
+  border-radius:0.3em;
+  box-sizing: border-box;
+  text-decoration:none;
+  font-weight:300;
+  color:#FFFFFF;
+  background-color:#4a4a4a;
+  text-align:center;
+  transition: all 0.2s;
+}
+
+a.button2:hover {
+  color:#DDD;
+  background-color:#6c6c6c;
+}
+
 @media all and (max-width:30em){
-  a.button1 {
+  a.button1, a.button2 {
     display:block;
     margin:0.4em auto;
   }

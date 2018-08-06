@@ -106,6 +106,18 @@ function renderMouseCursor(canvas, x, y) {
   ctx.fillStyle = 'rgb(0, 255, 0)';
   ctx.fillRect(x - (CROSSHAIR_SIZE / 2), y - (CROSSHAIR_THICKNESS / 2), CROSSHAIR_SIZE, CROSSHAIR_THICKNESS);
   ctx.fillRect(x - (CROSSHAIR_THICKNESS / 2), y - (CROSSHAIR_SIZE / 2), CROSSHAIR_THICKNESS, CROSSHAIR_SIZE);
+
+  ctx.strokeStyle = 'rgba(255, 255, 255, 0.22)';
+  ctx.beginPath();
+  ctx.moveTo(x, 0);
+  ctx.lineTo(x, canvas.height);
+  ctx.stroke();
+  ctx.closePath();
+  ctx.beginPath();
+  ctx.moveTo(0, y);
+  ctx.lineTo(canvas.width, y);
+  ctx.stroke();
+  ctx.closePath();
 }
 
 function renderRois(canvas, shelfRoi, aisleRoi) {

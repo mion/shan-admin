@@ -9,6 +9,21 @@
   <body>
     <div data-calibration-image-url="{{ my_calibration_video.video_calibration_image_url }}" hidden="true"></div>
     <div data-shelf-id="{{ shelf.id }}" hidden="true"></div>
+    <div id="open-modal" class="modal-window">
+      <div>
+        <a href="#modal-close" title="Close" class="modal-close">Close</a>
+        <h1>
+          Edit params
+        </h1>
+        <div>
+          <p>These parameters are used internally by the algorithm.</p>
+          <br>
+          <textarea name="calib-params" id="calib-params" cols="30" rows="10">
+            {"foo": [1, 2, 3], "bar": "quux"}
+          </textarea>
+        </div>
+      </div>
+    </div>
     <div class="navbar-bg">
       <div class="navbar-container">
         <div class="left">
@@ -53,7 +68,7 @@
       <a id="btn-test" class="button3" href="#">Run a test</a>
       <a id="btn-draw-aisle" class="button2" href="#">Draw aisle</a>
       <a id="btn-draw-shelf" class="button2" href="#">Draw shelf</a>
-      <a id="btn-edit-params" class="button2" href="#">Edit params</a>
+      <a id="btn-edit-params" class="button2" href="#open-modal">Edit params</a>
       <div class="v-space-1grem"></div>
       <hr>
       <div class="v-space-1grem"></div>

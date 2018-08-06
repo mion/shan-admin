@@ -224,7 +224,9 @@ function addROIEditingListeners(canvas) {
     renderCalibrationImage(canvas, canvas['calibrationImage']);
     renderMousePosition(canvas, relativeX, relativeY);
     renderMouseCursor(canvas, relativeX, relativeY);
-    renderRois(canvas, canvas['shelfRoi'], canvas['aisleRoi']);
+    if (canvas['shelfRoi'] || canvas['aisleRoi']) {
+      renderRois(canvas, canvas['shelfRoi'], canvas['aisleRoi']);
+    }
     if (canvas['currentlyEditingRoi'] !== null && canvas.clicks.length > 0) {
       var w = relativeX - canvas['clicks'][0].x;
       var h = relativeY - canvas['clicks'][0].y;
@@ -349,8 +351,8 @@ $(document).ready(function () {
       // FIXME: This is very bad.
       canvas['calibrationImage'] = image;
       canvas['currentlyEditingRoi'] = null;
-      canvas['shelfRoi'] = {x: 0, y: 0, width: 0, height: 0};
-      canvas['aisleRoi'] = {x: 0, y: 0, width: 0, height: 0};
+      canvas['shelfRoi'] = null;
+      canvas['aisleRoi'] = null;
       addROIEditingListeners(canvas);
       console.log('ROI editing listeners are ready.');
     },

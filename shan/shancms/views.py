@@ -75,6 +75,19 @@ def shelfs_calibrate(request, venue_id, shelf_id):
             'id': 1,
             'name': 'Prezunic'
         },
+        'calibration_params_jsonstr': json.dumps({
+            'tracking_conf': {
+                'foo': 123,
+            },
+            'rois_conf': {
+                'shelf': {
+                    'x': 0, 'y': 0, 'width': 100, 'height': 50
+                },
+            },
+            'events_conf': {
+                'max_distance': 50
+            },
+        }),
         'my_calibration_video': {
             'id': 1,
             'recording_date': '2018/08/01 14:15 (UTC)',

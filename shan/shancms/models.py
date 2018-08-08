@@ -52,4 +52,6 @@ class Event(models.Model):
     event_params = models.TextField()
     creation_date = models.DateTimeField('date created')
     shelf = models.ForeignKey(Shelf, on_delete=models.PROTECT)
+    # This redundancy is because we want to know which calib bundle was this event
+    # attached to, in case the shelf has a new calib bundle attached to it.
     calibration_bundle = models.ForeignKey(CalibrationBundle, on_delete=models.PROTECT)

@@ -1,9 +1,11 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.utils import dateparse
+from django.utils import timezone
 
 import json
 
-from .models import Event
+from .models import Venue, CalibrationVideo, CalibrationBundle, Shelf, Event
 
 def venue_list(request):
     ctx = {
@@ -133,6 +135,28 @@ def get_events(request):
         obj = {'type': evt.event_type, 'date': evt.creation_date, 'params': json.loads(evt.event_params)}
         evt_objs.append(obj)
     return JsonResponse({'shelf_id': shelf_id, 'events': evt_objs})
+
+# check this out
+#@csrf_exempt
+def save_events(request, venue_id, shelf_id):
+    payload = json.loads(request.body)
+    shelf_id = int(payload['shelf_id'])
+    events = payload['events']
+    venue_id = int(payload['venue_id'])
+    shelf = Shelf.objects.get(id=shelf_id)
+    # save the current calibration bundle
+    calib_bundle = CalibrationBundle.objects.get(id=shelf.calibration_bundle_id)
+    venue = Venue.objects.get(id=venue_id)
+    for evt in events:
+        event_type = evt['event_type']
+        event_params = evt['event_params']
+        creation_date = dateparse.parse_datetime(evt['creation_date'])
+        if not timezone.is_aware(creation_date):
+            # print("WARNING: received creation date that was not timezone aware")
+            creation_date = timezone.make_aware(creation_date, timezone.utc)
+        e = Event(event_type=event_type, event_params=json.dumps(event_params), creation_date=creation_date, shelf=shelf, calibration_bundle=calib_bundle)
+        e.save()
+    return JsonResponse({'success': True})
 
 def create_record_job(request):
     pass

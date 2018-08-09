@@ -138,15 +138,12 @@ def get_events(request):
 
 # check this out
 #@csrf_exempt
-def save_events(request, venue_id, shelf_id):
+def save_events(request, shelf_id):
     payload = json.loads(request.body)
-    shelf_id = int(payload['shelf_id'])
     events = payload['events']
-    venue_id = int(payload['venue_id'])
     shelf = Shelf.objects.get(id=shelf_id)
-    # save the current calibration bundle
+    # Save the calibration bundle against which these events were extracted.
     calib_bundle = CalibrationBundle.objects.get(id=shelf.calibration_bundle_id)
-    venue = Venue.objects.get(id=venue_id)
     for evt in events:
         event_type = evt['event_type']
         event_params = evt['event_params']
@@ -156,7 +153,7 @@ def save_events(request, venue_id, shelf_id):
             creation_date = timezone.make_aware(creation_date, timezone.utc)
         e = Event(event_type=event_type, event_params=json.dumps(event_params), creation_date=creation_date, shelf=shelf, calibration_bundle=calib_bundle)
         e.save()
-    return JsonResponse({'success': True})
+    return JsonResponse({'success': True}, status=201)
 
 def create_record_job(request):
     pass

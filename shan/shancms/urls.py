@@ -13,5 +13,6 @@ urlpatterns = [
     path('shelves/<int:shelf_id>', views.shelf_update, name='shelf_update'),
     path('shelves/<int:shelf_id>/camera_logs', views.get_camera_logs, name='get_camera_logs'),
     path('shelves/<int:shelf_id>/events', views.save_events, name='save_events'),
-    path('events', views.get_events, name='get_events'),
+    path('shelves/<int:shelf_id>/calibration_videos', views.save_calibration_video, name='save_calibration_video'),
+    path('events', views.get_events, name='get_events')
 ]

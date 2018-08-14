@@ -150,6 +150,18 @@ def save_events(request, shelf_id):
         e.save()
     return JsonResponse({'success': True}, status=201)
 
+def save_calibration_video(request, shelf_id):
+    payload = json.loads(request.body)
+    recording_date = dateparse.parse_datetime(payload['recording_date']) # ISO format
+    s3_key = payload['s3_key']
+    shelf = Shelf.objects.get(id=shelf_id)
+    video_url = 'https://s3.amazonaws.com/shan-develop/{}'.format(s3_key)
+    calib_vid = CalibrationVideo(company=shelf.company, recording_date=recording_date, video_url=video_url)
+    calib_vid.save()
+    shelf.calibration_video_id = calib_vid.id
+    shelf.save()
+    return JsonResponse({'success': True}, status=201)
+
 def create_record_job(request):
     pass
 

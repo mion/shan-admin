@@ -33,7 +33,7 @@ def venue_detail(request, venue_id):
         shelves_json.append({
             'id': shelf.id,
             'name': shelf.name,
-            'status': 'online',
+            'status': 'online', # TODO implement status
             'status_time': '1 day'
         })
     ctx = {
@@ -50,17 +50,19 @@ def venue_detail(request, venue_id):
     return render(request, 'shancms/venue_detail.html', ctx)
 
 def shelf_detail(request, venue_id, shelf_id):
+    venue = Venue.objects.get(id=venue_id)
+    shelf = Shelf.objects.get(id=shelf_id)
+    events = Event.objects.filter(shelf_id=shelf_id)
     ctx = {
-        'shelf': {'id': 1},
-        'venue': {
-            'id': 1,
-            'name': 'Prezunic'
-        },
         'current_user': {
             'email': 'gluisvieira@gmail.com'
         },
-        'first_date': 'Mon 6 Aug, 2018',
-        'last_date': 'Mon 9 Dec, 2018',
+        'shelf': {'id': shelf.id},
+        'venue': {
+            'id': venue.id,
+            'name': venue.name
+        },
+        'events_count': len(events)
     }
     return render(request, 'shancms/shelf_detail.html', ctx)
 

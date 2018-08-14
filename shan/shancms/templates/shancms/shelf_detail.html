@@ -28,7 +28,7 @@
       <div class="v-space-1grem"></div>
       <a href="{% url 'shancms:venue_detail' venue.id %}" class="link">← Back to shelves</a>
       <h1>Events</h1>
-      <p>Found events from <b>{{ first_date}}</b> until <b>{{ last_date }}</b>.</p>
+      <p>Found <b>{{ events_count }}</b> events.</p>
       <div class="v-space-1grem"></div>
       <div id="loading-container" hidden="false"></div>
       <div id="error-container" hidden="true"></div>

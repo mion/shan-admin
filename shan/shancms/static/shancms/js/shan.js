@@ -148,9 +148,9 @@ function buildChartData(firstDate, lastDate, eventsByDateString) {
   }
   return {
     labels: labels,
-    walkedData: walkedData, 
-    interactedData: interactedData, 
-    ponderedData: ponderedData, 
+    walkedData: walkedData,
+    interactedData: interactedData,
+    ponderedData: ponderedData,
     ponderedDurationData: ponderedDurationData
   };
 }
@@ -201,8 +201,8 @@ function aggregateChartData(chartData, period) { // TODO: refactor this hacky cr
     ponderedDurationData: []
   };
   var daysInPeriod;
-  if (period === 'days') { 
-    return chartData; 
+  if (period === 'days') {
+    return chartData;
   } else if (period === 'weeks') {
     daysInPeriod = 7;
   } else if (period === 'months') {
@@ -290,15 +290,27 @@ function initialize() {
   try {
     shelfId = parseInt($('[data-shelf-id]').data('shelf-id'))
   } catch (error) {
-    alert("Sorry, the server is currently under maintenance. Please try again later.");
+    var message = "Sorry, the server is currently under maintenance. Please try again later.";
+    alert(message);
     console.log("Failed to get shelfId from HTML");
     console.error(error);
+    $('#error-message').show();
+    $('#error-message').text(message);
   }
   console.log('Shelf ID:', shelfId);
+  $('#loader').show();
   getEvents(shelfId, function (data) {
+    $('#loader').hide();
     if (data) {
       console.log("Data returned from API:", data);
+      if (data.events.length === 0) {
+        $('#error-message').show();
+        $('#error-message').text('');
+        return;
+      }
+      $('#chart-container').show();
       $('#chart-controls').show();
+      $('#btn-reload').show();
       var aggregateByDaysRadio = document.getElementById('agg-days');
       var aggregateByWeeksRadio = document.getElementById('agg-weeks');
       var aggregateByMonthsRadio = document.getElementById('agg-months');
@@ -340,8 +352,11 @@ function initialize() {
         updateChart(chart, updatedChartData);
       });
     } else {
-      alert('Network failure. Please try again in a few minutes.');
+      var msg = 'Network failure. Please try again in a few minutes.';
+      alert(msg);
       console.error("Failed to get events data from API.");
+      $('#error-message').show();
+      $('#error-message').text(msg);
     }
   });
 }

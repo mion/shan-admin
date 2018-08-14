@@ -30,12 +30,14 @@
       <h1>Events</h1>
       <p>Found <b>{{ events_count }}</b> events.</p>
       <div class="v-space-1grem"></div>
-      <div id="loading-container" hidden="false"></div>
-      <div id="error-container" hidden="true"></div>
-      <div id="chart-container">
+      <div id="loader" hidden>
+        <p>Loading events...</p>
+      </div>
+      <p id="error-message" hidden></p>
+      <div id="chart-container" hidden>
         <canvas id="shan-chart" width="600" height="400"></canvas>
       </div>
-      <div id="chart-controls" hidden="true">
+      <div id="chart-controls" hidden>
         <br />
         <fieldset id="agg-fieldset" class="fieldset">
           <legend><b class="text-large">Average by period</b></legend>
@@ -65,7 +67,9 @@
           </span>
         </fieldset>
         <br/>
-        <a id="btn-reload" class="button1" href="#">Reload chart</a>
+      </div>
+      <div id="chart-buttons">
+        <a id="btn-reload" class="button1" href="#" style="display: none;">Reload chart</a>
         <a id="btn-calibrate" class="button2" href="{% url 'shancms:shelf_edit' venue.id shelf.id %}">Calibrate</a>
       </div>
       <div class="footer">

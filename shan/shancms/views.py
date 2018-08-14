@@ -67,31 +67,33 @@ def shelf_detail(request, venue_id, shelf_id):
     return render(request, 'shancms/shelf_detail.html', ctx)
 
 def shelf_edit(request, venue_id, shelf_id):
+    shelf = Shelf.objects.get(id=shelf_id)
+    venue = Venue.objects.get(id=venue_id)
+    calibration_bundle = None if shelf.calibration_bundle_id is None else CalibrationBundle.objects.get(id=shelf.calibration_bundle_id)
+    calibration_video = None if calibration_bundle is None else CalibrationVideo.objects.get(id=calibration_bundle.calibration_video_id)
+    my_calib_video = None
+    if calibration_video is not None:
+        my_calib_video = {
+            'id': calibration_video.id,
+            'recording_date': str(calibration_video.recording_date), # TODO fix date str rep
+            'video_url': calibration_video.video_url,
+            'video_calibration_image_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.jpg'
+        }
     ctx = {
-        'shelf': {'id': 1},
+        'current_user': {
+            'email': 'gluisvieira@gmail.com'
+        },
+        'shelf': {'id': shelf.id},
         'venue': {
-            'id': 1,
-            'name': 'Prezunic'
+            'id': venue.id,
+            'name': venue.name
         },
         'calibration_params_jsonstr': json.dumps({
-            'tracking_conf': {
-                'foo': 123,
-            },
-            'rois_conf': {
-                'shelf': {
-                    'x': 0, 'y': 0, 'width': 100, 'height': 50
-                },
-            },
-            'events_conf': {
-                'max_distance': 50
-            },
+            'tracking_conf': {} if calibration_bundle is None else calibration_bundle.tracking_conf,
+            'rois_conf': {} if calibration_bundle is None else calibration_bundle.rois_conf,
+            'events_conf': {} if calibration_bundle is None else calibration_bundle.events_conf,
         }),
-        'my_calibration_video': {
-            'id': 1,
-            'recording_date': '2018/08/01 14:15 (UTC)',
-            'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4',
-            'video_calibration_image_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.jpg',
-        },
+        'my_calibration_video': my_calib_video,
         'tests_count': 2,
         'tests': [
             {
@@ -114,9 +116,6 @@ def shelf_edit(request, venue_id, shelf_id):
                 'video_calibration_image_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.jpg',
             }
         ],
-        'current_user': {
-            'email': 'gluisvieira@gmail.com'
-        },
     }
     return render(request, 'shancms/shelf_edit.html', ctx)
 

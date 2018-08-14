@@ -8,23 +8,20 @@ import json
 from .models import Venue, CalibrationVideo, CalibrationBundle, Shelf, Event
 
 def venue_list(request):
+    venues = Venue.objects.all() # TODO filter for current user
+    venues_json = []
+    for venue in venues:
+        venues_json.append({
+            'id': venue.id,
+            'name': venue.name,
+            'address': venue.address
+        })
     ctx = {
         'current_user': {
             'email': 'gluisvieira@gmail.com'
         },
-        'venues_count': 3,
-        'venues': [
-            {
-                'id': 1,
-                'name': 'Prezunic',
-                'address': 'Rua General Polidoro 308 - Rio de Janeiro, RJ - 22470010 - Brasil'
-            },
-            {
-                'id': 2,
-                'name': 'Walmart WL',
-                'address': 'Avenida Washington Luis 319 - Rio de Janeiro, RJ - 22470010 - Brasil'
-            },
-        ]
+        'venues_count': len(venues),
+        'venues': venues_json
     }
     return render(request, 'shancms/venue_list.html', ctx)
 

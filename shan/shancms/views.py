@@ -26,29 +26,26 @@ def venue_list(request):
     return render(request, 'shancms/venue_list.html', ctx)
 
 def venue_detail(request, venue_id):
+    venue = Venue.objects.get(id=venue_id)
+    shelves = Shelf.objects.filter(venue_id=venue_id)
+    shelves_json = []
+    for shelf in shelves:
+        shelves_json.append({
+            'id': shelf.id,
+            'name': shelf.name,
+            'status': 'online',
+            'status_time': '1 day'
+        })
     ctx = {
         'current_user': {
             'email': 'gluisvieira@gmail.com'
         },
         'venue': {
-            'id': 1,
-            'name': 'Prezunic'
+            'id': venue.id,
+            'name': venue.name
         },
-        'shelves_count': 2,
-        'shelves': [
-            {
-                'id': 1,
-                'name': 'CORREDOR GARRAFAS PET 2L',
-                'status': 'online',
-                'status_time': '11 days'
-            },
-            {
-                'id': 2,
-                'name': 'GONDOLA PREMIUM COCA-COLA',
-                'status': 'offline',
-                'status_time': '2 hours'
-            }
-        ]
+        'shelves_count': len(shelves),
+        'shelves': shelves_json
     }
     return render(request, 'shancms/venue_detail.html', ctx)
 

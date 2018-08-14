@@ -79,6 +79,16 @@ def shelf_edit(request, venue_id, shelf_id):
             'video_url': calibration_video.video_url,
             'video_calibration_image_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.jpg'
         }
+    other_calibration_videos = []
+    calib_vids = CalibrationVideo.objects.filter(company=shelf.company)
+    for vid in calib_vids:
+        if (my_calib_video is None) or (my_calib_video.id != vid.id):
+            other_calibration_videos.append({
+                'id': vid.id,
+                'recording_date': str(vid.recording_date),
+                'video_url': vid.video_url,
+                'video_calibration_image_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.jpg'
+            })
     ctx = {
         'current_user': {
             'email': 'gluisvieira@gmail.com'
@@ -102,20 +112,7 @@ def shelf_edit(request, venue_id, shelf_id):
                 'result_video_url': 'http://localhost:3601/test-result-12345678.mp4',
             }
         ],
-        'other_calibration_videos': [
-            {
-                'id': 2,
-                'recording_date': '2018/07/31 17:58 (UTC)',
-                'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4',
-                'video_calibration_image_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.jpg',
-            },
-            {
-                'id': 3,
-                'recording_date': '2018/07/31 16:29 (UTC)',
-                'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4',
-                'video_calibration_image_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.jpg',
-            }
-        ],
+        'other_calibration_videos': other_calibration_videos,
     }
     return render(request, 'shancms/shelf_edit.html', ctx)
 

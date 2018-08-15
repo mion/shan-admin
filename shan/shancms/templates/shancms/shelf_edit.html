@@ -18,9 +18,7 @@
         <div>
           <p>These parameters are used internally by the algorithm.</p>
           <br>
-          <textarea name="calib-params" id="calib-params" cols="30" rows="10">
-            {{ calibration_params_jsonstr }}
-          </textarea>
+          <textarea name="calib-params" id="calib-params" cols="30" rows="10" spellcheck="false">{{ calibration_params_jsonstr }}</textarea>
         </div>
       </div>
     </div>
@@ -41,22 +39,26 @@
       </div>
     </div>
     <div class="main">
+      {% if my_calibration_video is not None %}
+      <div data-calibration-video-id="{{ my_calibration_video.id }}" hidden></div>
+      {% endif %}
       <div class="v-space-1grem"></div>
       <a href="{% url 'shancms:shelf_detail' venue.id shelf.id %}" class="link">← Back to events</a>
-      <h1>Calibrate a shelf</h1>
-      <p>Use the buttons below to draw regions of interest (<b>shelf</b> or <b>aisle</b>).</p>
-      <div class="v-space-1grem"></div>
-      <canvas id="calibration-canvas"></canvas>
-      <div id="canvas-message">
+      <div id="calibration-container" style="display: none;">
+        <h1>Calibrate a shelf</h1>
+        <p>Use the buttons below to draw regions of interest (<b>shelf</b> or <b>aisle</b>).</p>
+        <div class="v-space-1grem"></div>
+        <canvas id="calibration-canvas"></canvas>
+        <div id="canvas-message">
+        </div>
+        <div class="v-space-1grem"></div>
+        <a id="btn-save" class="button1" href="#">Save</a>
+        <a id="btn-draw-aisle" class="button2" href="#">Draw aisle</a>
+        <a id="btn-draw-shelf" class="button2" href="#">Draw shelf</a>
+        <a id="btn-edit-params" class="button2" href="#open-modal">Edit params</a>
+        <div class="v-space-1grem"></div>
+        <hr>
       </div>
-      <br>
-      <!-- <div class="v-space-1grem"></div> -->
-      <a id="btn-save" class="button1" href="#">Save</a>
-      <a id="btn-draw-aisle" class="button2" href="#">Draw aisle</a>
-      <a id="btn-draw-shelf" class="button2" href="#">Draw shelf</a>
-      <a id="btn-edit-params" class="button2" href="#open-modal">Edit params</a>
-      <div class="v-space-1grem"></div>
-      <hr>
       <h1>Record video</h1>
       <p>
         <label for="calib-video-select">Choose a recording to load above:  </label>

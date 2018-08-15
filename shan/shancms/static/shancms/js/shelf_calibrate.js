@@ -51,6 +51,16 @@ ShanAPIClient.prototype.updateShelf = function (shelfId, calibrationVideoId, roi
   }, 1750);
 };
 
+ShanAPIClient.prototype.getCalibrationVideo = function (id, callbacks) {
+  $.get('/shancms/calibration_videos/' + id)
+    .fail(function (err) {
+      callbacks.error(err);
+    })
+    .done(function (data) {
+      callbacks.success(data);
+    });
+};
+
 ShanAPIClient.prototype.getCameraLogs = function (shelfId, numberOfLines, callbacks) {
   setTimeout(function () {
     text = [
@@ -215,6 +225,8 @@ function renderRois(canvas, shelfRoi, aisleRoi) {
   }
 }
 
+var hasROIEditingListeners = false;
+
 function addROIEditingListeners(canvas) {
   var mouseMoveHandler = function(e) {
     var relativeX = e.clientX - canvas.offsetLeft;
@@ -331,10 +343,77 @@ function setEditingMode(currentlyEditingRoi) {
   }
 }
 
+function replaceExtension(path, newExtension) {
+  // FIXME fixed extension
+  var parts = path.split('.mp4');
+  if (parts.length != 2) {
+    throw new DOMException('cannot replace extension for: ' + path);
+  }
+  return parts[0] + '.' + newExtension;
+}
+
+function loadCalibrationVideo(id) {
+  console.log('Loading calibration video with ID = ', id);
+  var api = new ShanAPIClient();
+  api.getCalibrationVideo(id, {
+    success: function (calibVideo) {
+      console.log('Calibration video loaded: ', calibVideo);
+      var calibrationImageUrl = replaceExtension(calibVideo['video_url'], 'jpg');
+      downloadImage(calibrationImageUrl, {
+        success: function (image) {
+          var canvas = getCanvas();
+          var context = getContext(canvas);
+          console.log('Calibration image downloaded successfully.');
+
+          resizeCanvas(canvas, image.width, image.height);
+          console.log('Canvas resized to width/height: ', image.width, image.height);
+
+          renderCalibrationImage(canvas, image);
+          console.log('Calibration image rendered.');
+
+          // FIXME: This is very bad.
+          canvas['calibrationImage'] = image;
+          canvas['currentlyEditingRoi'] = null;
+          canvas['shelfRoi'] = null;
+          canvas['aisleRoi'] = null;
+          $('#calibration-container').show();
+          if (!hasROIEditingListeners) {
+            addROIEditingListeners(canvas);
+            console.log('ROI editing listeners are ready.');
+            hasROIEditingListeners = true;
+          } else {
+            console.log('ROI editing listeners already added.');
+          }
+        },
+        failure: function (error) {
+          alert(error.message);
+          console.error('Failed to download calibration image!\nError:', error);
+        }
+      });
+    },
+    error: function (err) {
+      alert('ERROR: failed to load calibration video.');
+      console.error('Failed to load calibration video with ID = ', id, err);
+    }
+  });
+}
+
 $(document).ready(function () {
   var shelfId = $('[data-shelf-id]').data('shelf-id');
   var calibrationImageUrl = $('[data-calibration-image-url]').data('calibration-image-url');
-  updateCameraLogs(shelfId);
+  var calibrationVideoId = null;
+  if ($('[data-calibration-video-id]').length > 0) {
+    calibrationVideoId = $('[data-calibration-video-id]').data('calibration-video-id');
+  }
+  // updateCameraLogs(shelfId);
+  if (calibrationVideoId) {
+    loadCalibrationVideo(calibrationVideoId);
+  }
+  $('#calib-video-select').on('change', function () {
+    var calibrationVideoId = parseInt($(this).val());
+    loadCalibrationVideo(calibrationVideoId);
+  });
+  /*
   downloadImage(calibrationImageUrl, {
     success: function (image) {
       var canvas = getCanvas();
@@ -360,6 +439,7 @@ $(document).ready(function () {
       console.error('Failed to download calibration image!\nError:', error);
     }
   });
+  */
   /* Set buttons listeners */
   $('#btn-record').on('click', function () {
     updateRecordingButton($(this), true);

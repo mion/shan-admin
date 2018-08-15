@@ -159,6 +159,13 @@ def save_calibration_video(request, shelf_id):
     shelf.save()
     return JsonResponse({'success': True}, status=201)
 
+def get_calibration_video(request, calibration_video_id):
+    calib_vid = CalibrationVideo.objects.get(id=calibration_video_id)
+    return JsonResponse({
+        'id': calib_vid.id,
+        'video_url': calib_vid.video_url
+    })
+
 def create_record_job(request):
     pass
 

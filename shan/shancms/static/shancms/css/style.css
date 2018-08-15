@@ -341,6 +341,10 @@ a.button0:hover {
   padding-top: 14px;
 }
 
+#calib-params {
+  font-family: monospace;
+}
+
 /* Modal */
 
 .modal-window {

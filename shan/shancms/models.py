@@ -55,3 +55,9 @@ class Event(models.Model):
     # This redundancy is because we want to know which calib bundle was this event
     # attached to, in case the shelf has a new calib bundle attached to it.
     calibration_bundle = models.ForeignKey(CalibrationBundle, on_delete=models.PROTECT)
+
+
+class Experiment(models.Model):
+    shelf = models.ForeignKey(Shelf, on_delete=models.PROTECT)
+    creation_date = models.DateTimeField('date created')
+    video_url = models.CharField(max_length=1000)

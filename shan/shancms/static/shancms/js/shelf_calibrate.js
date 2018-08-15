@@ -38,23 +38,48 @@ ShanAPIClient.prototype.createCalibrationTestJob = function (shelfId, callbacks)
   }, 1750);
 };
 
-ShanAPIClient.prototype.updateShelf = function (shelfId, calibrationVideoId, rois, params, callbacks) {
-  setTimeout(function () {
-    callbacks.success({
-      'shelf': {
-        'id': shelfId,
-        'calibration_video_id': calibrationVideoId,
-        'rois': rois,
-        'params': params
-      }
+ShanAPIClient.prototype.getShelf = function (shelfId, callbacks) {
+  $.get('/shancms/shelves/' + shelfId)
+    .fail(function (err) {
+      callbacks.failure(err);
+    })
+    .done(function (data) {
+      callbacks.success(data);
     });
-  }, 1750);
+};
+
+ShanAPIClient.prototype.updateShelf = function (shelfId, calibrationVideoId, rois, params, callbacks) {
+  console.log('Upading params:', params);
+  var data = JSON.stringify({
+    name: 'calib-bundle_' + (new Date()).toISOString(),
+    calibration_video_id: calibrationVideoId,
+    tracking_conf: params.tracking_conf,
+    events_conf: params.events_conf,
+    rois_conf: rois,
+  });
+  $.ajax({
+    type: 'POST',
+    url: '/shancms/shelves/' + shelfId + '/calibration_bundles',
+    data: data,
+    dataType: 'json',
+    contentType: 'application/json; charset=utf-8',
+    success: function (data) {
+      if (data.success) {
+        callbacks.success(data);
+      } else {
+        callbacks.failure({message: 'Failed to update shelf'});
+      }
+    },
+    error: function (req, status, error) {
+      callbacks.failure(error);
+    }
+  });
 };
 
 ShanAPIClient.prototype.getCalibrationVideo = function (id, callbacks) {
   $.get('/shancms/calibration_videos/' + id)
     .fail(function (err) {
-      callbacks.error(err);
+      callbacks.failure(err);
     })
     .done(function (data) {
       callbacks.success(data);
@@ -352,7 +377,7 @@ function replaceExtension(path, newExtension) {
   return parts[0] + '.' + newExtension;
 }
 
-function loadCalibrationVideo(id) {
+function loadCalibrationVideo(id, rois_conf) {
   console.log('Loading calibration video with ID = ', id);
   var api = new ShanAPIClient();
   api.getCalibrationVideo(id, {
@@ -374,8 +399,14 @@ function loadCalibrationVideo(id) {
           // FIXME: This is very bad.
           canvas['calibrationImage'] = image;
           canvas['currentlyEditingRoi'] = null;
-          canvas['shelfRoi'] = null;
-          canvas['aisleRoi'] = null;
+          if (rois_conf) {
+            canvas['shelfRoi'] = rois_conf.filter(function (c) { return c.type == 'shelf'; })[0];
+            canvas['aisleRoi'] = rois_conf.filter(function (c) { return c.type == 'aisle'; })[0];
+            renderRois(canvas, canvas['shelfRoi'], canvas['aisleRoi']);
+          } else {
+            canvas['shelfRoi'] = null;
+            canvas['aisleRoi'] = null;
+          }
           $('#calibration-container').show();
           if (!hasROIEditingListeners) {
             addROIEditingListeners(canvas);
@@ -391,24 +422,25 @@ function loadCalibrationVideo(id) {
         }
       });
     },
-    error: function (err) {
+    failure: function (err) {
       alert('ERROR: failed to load calibration video.');
       console.error('Failed to load calibration video with ID = ', id, err);
     }
   });
 }
 
-$(document).ready(function () {
-  var shelfId = $('[data-shelf-id]').data('shelf-id');
-  var calibrationImageUrl = $('[data-calibration-image-url]').data('calibration-image-url');
-  var calibrationVideoId = null;
-  if ($('[data-calibration-video-id]').length > 0) {
-    calibrationVideoId = $('[data-calibration-video-id]').data('calibration-video-id');
+function init(shelf) {
+  if (shelf.calibration_bundle) {
+    // load stuff from shelf
+    var paramsText = JSON.stringify({
+      tracking_conf: shelf.calibration_bundle.tracking_conf,
+      events_conf: shelf.calibration_bundle.events_conf
+    });
+    $('#calib-params').val(paramsText);
+    var calibrationVideoId = shelf.calibration_bundle.calibration_video_id;
+    loadCalibrationVideo(calibrationVideoId, shelf.calibration_bundle.rois_conf);
   }
-  // updateCameraLogs(shelfId);
-  if (calibrationVideoId) {
-    loadCalibrationVideo(calibrationVideoId);
-  }
+  // standard init
   $('#calib-video-select').on('change', function () {
     var calibrationVideoId = parseInt($(this).val());
     loadCalibrationVideo(calibrationVideoId);
@@ -416,7 +448,7 @@ $(document).ready(function () {
   /* Set buttons listeners */
   $('#btn-record').on('click', function () {
     updateRecordingButton($(this), true);
-    recordCalibrationVideo(shelfId)
+    recordCalibrationVideo(shelf.id)
   });
   var isViewingCameraLogs = false;
   $('#camera-logs').hide();
@@ -437,7 +469,7 @@ $(document).ready(function () {
       return;
     }
     updateTestButton($(this), true);
-    runTest(shelfId);
+    runTest(shelf.id);
   });
   $('#btn-draw-aisle').on('click', function (e) {
     var canvas = getCanvas();
@@ -487,11 +519,11 @@ $(document).ready(function () {
         },
       ];
       console.log('regions of interest = ', rois);
-      var params = $('#calib-params').text();
+      var params = JSON.parse($('#calib-params').val());
       console.log('parameters = ', params);
       $('#btn-save').removeClass('button1').addClass('button0');
       $('#canvas-message').text('Saving, please wait...');
-      api.updateShelf(shelfId, calibrationVideoId, rois, params, {
+      api.updateShelf(shelf.id, calibrationVideoId, rois, params, {
         success: function (shelf) {
           $('#btn-save').removeClass('button0').addClass('button1');
           $('#canvas-message').text('✓ Saved successfully.');
@@ -506,4 +538,23 @@ $(document).ready(function () {
       });
     }
   });
+}
+
+$(document).ready(function () {
+  var shelfId = $('[data-shelf-id]').data('shelf-id');
+  var api = new ShanAPIClient();
+  api.getShelf(shelfId, {
+    success: function (shelf) {
+      console.log('Loaded shelf:', shelf);
+      init(shelf);
+    },
+    failure: function (err) {
+      console.error('Failed to GET shelf:', err);
+    }
+  });
+  // var calibrationVideoId = null;
+  // if ($('[data-calibration-video-id]').length > 0) {
+  //   calibrationVideoId = $('[data-calibration-video-id]').data('calibration-video-id');
+  // }
+  // updateCameraLogs(shelfId);
 });

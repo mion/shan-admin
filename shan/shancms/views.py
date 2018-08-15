@@ -1,9 +1,10 @@
+import datetime
+import json
+
 from django.shortcuts import render
 from django.http import JsonResponse
 from django.utils import dateparse
 from django.utils import timezone
-
-import json
 
 from .models import Venue, CalibrationVideo, CalibrationBundle, Shelf, Event
 
@@ -82,7 +83,7 @@ def shelf_edit(request, venue_id, shelf_id):
     other_calibration_videos = []
     calib_vids = CalibrationVideo.objects.filter(company=shelf.company)
     for vid in calib_vids:
-        if (my_calib_video is None) or (my_calib_video.id != vid.id):
+        if (my_calib_video is None) or (my_calib_video['id'] != vid.id):
             other_calibration_videos.append({
                 'id': vid.id,
                 'recording_date': str(vid.recording_date),
@@ -166,14 +167,54 @@ def get_calibration_video(request, calibration_video_id):
         'video_url': calib_vid.video_url
     })
 
+def save_calibration_bundle(request, shelf_id):
+    payload = json.loads(request.body)
+    name = payload['name']
+    rois_conf = payload['rois_conf']
+    tracking_conf = payload['tracking_conf']
+    events_conf = payload['events_conf']
+    creation_date = datetime.datetime.utcnow().replace(tzinfo=timezone.utc) # FIXME
+    calibration_video_id = payload['calibration_video_id']
+    calib_vid = CalibrationVideo.objects.get(id=calibration_video_id)
+    calib_bundle = CalibrationBundle(name=name, rois_conf=json.dumps(rois_conf), tracking_conf=json.dumps(tracking_conf), events_conf=json.dumps(events_conf), creation_date=creation_date, calibration_video=calib_vid)
+    calib_bundle.save()
+    shelf = Shelf.objects.get(id=shelf_id)
+    shelf.calibration_bundle_id = calib_bundle.id
+    shelf.save()
+    return JsonResponse({
+        'success': True
+    }, status=201)
+    # name = models.CharField(max_length=200)
+    # rois_conf = models.TextField()
+    # tracking_conf = models.TextField()
+    # events_conf = models.TextField()
+    # creation_date = models.DateTimeField('date created')
+    # calibration_video = models.ForeignKey(CalibrationVideo, on_delete=models.PROTECT)
+
 def create_record_job(request):
     pass
 
 def create_experiment_job(request):
     pass
 
-def shelf_update(request):
-    pass
+def get_shelf(request, shelf_id):
+    shelf = Shelf.objects.get(id=shelf_id)
+    resp = {
+        'id': shelf.id,
+        'venue_id': shelf.venue_id,
+        'company': shelf.company.name,
+    }
+    if shelf.calibration_bundle_id is not None:
+        bundle = CalibrationBundle.objects.get(id=shelf.calibration_bundle_id)
+        resp['calibration_bundle'] = {
+            'calibration_video_id': bundle.calibration_video_id,
+            'rois_conf': json.loads(bundle.rois_conf),
+            'tracking_conf': json.loads(bundle.tracking_conf),
+            'events_conf': json.loads(bundle.events_conf),
+        }
+    else:
+        resp['calibration_bundle'] = None
+    return JsonResponse(resp)
 
 def get_camera_logs(request):
     pass

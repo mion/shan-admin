@@ -11,9 +11,10 @@ urlpatterns = [
     path('calibration_videos/<int:calibration_video_id>/jobs', views.create_record_job, name='create_record_job'),
     path('calibration_videos/<int:calibration_video_id>', views.get_calibration_video, name='get_calibration_video'),
     path('calibration_experiments/<int:calibration_video_id>/jobs', views.create_experiment_job, name='create_experiment_job'),
-    path('shelves/<int:shelf_id>', views.shelf_update, name='shelf_update'),
+    path('shelves/<int:shelf_id>', views.get_shelf, name='get_shelf'),
     path('shelves/<int:shelf_id>/camera_logs', views.get_camera_logs, name='get_camera_logs'),
     path('shelves/<int:shelf_id>/events', views.save_events, name='save_events'),
     path('shelves/<int:shelf_id>/calibration_videos', views.save_calibration_video, name='save_calibration_video'),
+    path('shelves/<int:shelf_id>/calibration_bundles', views.save_calibration_bundle, name='save_calibration_bundle'),
     path('events', views.get_events, name='get_events')
 ]

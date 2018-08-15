@@ -7,7 +7,7 @@
     <link rel="stylesheet" type="text/css" href="{% static 'shancms/css/style.css' %}">
   </head>
   <body>
-    <div data-calibration-image-url="{{ my_calibration_video.video_calibration_image_url }}" hidden="true"></div>
+    <!-- <div data-calibration-image-url="{{ my_calibration_video.video_calibration_image_url }}" hidden="true"></div> -->
     <div data-shelf-id="{{ shelf.id }}" hidden="true"></div>
     <div id="open-modal" class="modal-window">
       <div>
@@ -18,7 +18,7 @@
         <div>
           <p>These parameters are used internally by the algorithm.</p>
           <br>
-          <textarea name="calib-params" id="calib-params" cols="30" rows="10" spellcheck="false">{{ calibration_params_jsonstr }}</textarea>
+          <textarea name="calib-params" id="calib-params" cols="30" rows="10" spellcheck="false"></textarea>
         </div>
       </div>
     </div>
@@ -61,7 +61,7 @@
       </div>
       <h1>Record video</h1>
       <p>
-        <label for="calib-video-select">Choose a recording to load above:  </label>
+        <label for="calib-video-select">Choose a recording to load above:</label>
         <select id="calib-video-select">
             <option value="{{ my_calibration_video.id }}">{{ my_calibration_video.recording_date }}</option>
             {% for calib_video in other_calibration_videos %}

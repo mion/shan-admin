@@ -211,7 +211,14 @@ def create_record_job(request, shelf_id):
     return JsonResponse({'success': True}, status=201)
 
 def create_experiment_job(request, shelf_id):
-    add_experiment_job(shelf_id)
+    payload = json.loads(request.body)
+    calib_video_id = payload['calibration_video_id']
+    cv = CalibrationVideo.objects.get(id=calib_video_id)
+    _, basename = os.path.split(cv.video_url)
+    rois_conf = payload['rois_conf']
+    tracking_conf = payload['tracking_conf']
+    events_conf = payload['events_conf']
+    add_experiment_job(basename, shelf_id, calib_video_id, rois_conf, tracking_conf, events_conf)
     return JsonResponse({'success': True}, status=201)
 
 def save_experiment(request, shelf_id):

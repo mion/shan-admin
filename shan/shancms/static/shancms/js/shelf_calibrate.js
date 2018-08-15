@@ -40,9 +40,13 @@ ShanAPIClient.prototype.createCalibrationVideoRecordingJob = function (shelfId, 
   // }, 1750);
 };
 
-ShanAPIClient.prototype.createCalibrationTestJob = function (shelfId, callbacks) {
+ShanAPIClient.prototype.createCalibrationTestJob = function (shelfId, calibrationVideoId, roisConf, trackingConf, eventsConf, callbacks) {
   var data = JSON.stringify({
-    'shelf_id': shelfId // useless
+    'shelf_id': shelfId,
+    'calibration_video_id': calibrationVideoId,
+    'rois_conf': roisConf,
+    'tracking_conf': trackingConf,
+    'events_conf': eventsConf,
   });
   $.ajax({
     type: 'POST',
@@ -155,9 +159,28 @@ function recordCalibrationVideo(shelfId) {
   })
 }
 
-function runTest(shelfId, rois, params) {
+/*
+ShanAPIClient.prototype.createCalibrationTestJob = function (shelfId, calibrationVideoId, roisConf, trackingConf, eventsConf, callbacks) {
+canvas['shelfRoi'] = {
+  x: canvas['clicks'][0].x,
+  y: canvas['clicks'][0].y,
+  width: w,
+  height: h
+};
+
+*/
+
+function runTest(shelfId) {
+  var canvas = getCanvas();
   var api = new ShanAPIClient();
-  api.createCalibrationTestJob(shelfId, {
+  var roisConf = [
+    canvas['shelfRoi'],
+    canvas['aisleRoi']
+  ]
+  roisConf[0].type = 'shelf';
+  roisConf[1].type = 'aisle';
+  var params = JSON.parse($('#calib-params').val());
+  api.createCalibrationTestJob(shelfId, __calibrationVideoId, roisConf, params.tracking_conf, params.events_conf, {
     success: function (calibrationTest) {
       console.log(calibrationTest);
       updateTestButton($('#btn-test'), )
@@ -454,6 +477,8 @@ function loadCalibrationVideo(id, rois_conf) {
   });
 }
 
+var __calibrationVideoId;
+
 function init(shelf) {
   if (shelf.calibration_bundle) {
     // load stuff from shelf
@@ -463,11 +488,13 @@ function init(shelf) {
     });
     $('#calib-params').val(paramsText);
     var calibrationVideoId = shelf.calibration_bundle.calibration_video_id;
+    __calibrationVideoId = calibrationVideoId;
     loadCalibrationVideo(calibrationVideoId, shelf.calibration_bundle.rois_conf);
   }
   // standard init
   $('#calib-video-select').on('change', function () {
     var calibrationVideoId = parseInt($(this).val());
+    __calibrationVideoId = calibrationVideoId;
     loadCalibrationVideo(calibrationVideoId);
   });
   /* Set buttons listeners */

@@ -41,18 +41,26 @@ ShanAPIClient.prototype.createCalibrationVideoRecordingJob = function (shelfId, 
 };
 
 ShanAPIClient.prototype.createCalibrationTestJob = function (shelfId, callbacks) {
-  setTimeout(function () {
-    var date = new Date();
-    callbacks.success({
-      'calibration_test': {
-        'id': 1,
-        'creation_date': date.toDateString(),
-        'status': 'progress 0.85',
-        'creation_date': date.toDateString(),
-        'result_video_url': 'http://localhost:3601/test-result-12345678.mp4',
+  var data = JSON.stringify({
+    'shelf_id': shelfId // useless
+  });
+  $.ajax({
+    type: 'POST',
+    url: '/shancms/shelves/' + shelfId + '/experiments/jobs',
+    data: data,
+    dataType: 'json',
+    contentType: 'application/json; charset=utf-8',
+    success: function (data) {
+      if (data.success) {
+        callbacks.success(data);
+      } else {
+        callbacks.failure({message: 'Failed to create job'});
       }
-    })
-  }, 1750);
+    },
+    error: function (req, status, error) {
+      callbacks.failure(error);
+    }
+  });
 };
 
 ShanAPIClient.prototype.getShelf = function (shelfId, callbacks) {

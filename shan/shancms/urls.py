@@ -16,5 +16,7 @@ urlpatterns = [
     path('shelves/<int:shelf_id>/calibration_videos', views.save_calibration_video, name='save_calibration_video'),
     path('shelves/<int:shelf_id>/calibration_videos/jobs', views.create_record_job, name='create_record_job'),
     path('shelves/<int:shelf_id>/calibration_bundles', views.save_calibration_bundle, name='save_calibration_bundle'),
+    path('shelves/<int:shelf_id>/experiments/save', views.save_experiment, name='save_experiment'),
+    path('shelves/<int:shelf_id>/experiments/jobs', views.create_experiment_job, name='create_experiment_job'),
     path('events', views.get_events, name='get_events')
 ]

@@ -81,14 +81,14 @@
       <div class="v-space-1grem"></div>
       <hr>
       <h1>Results</h1>
-      <p>Found {{ tests_count }} test results.</p>
+      <p>Found {{ experiments_count }} test results.</p>
       <div class="v-space-1grem"></div>
       <div class="test-list">
-        {% for test in tests %}
+        {% for e in experiments %}
         <div class="test-item">
-          <div class="test-status">{{ test.status }}</div>
-          <div class="test-creation-date">{{ test.creation_date }}</div>
-          <div class="test-result"><a href="{{ test.result_video_url }}" target="_blank" class="link">Open video</a></div>
+          <div class="test-status">{{ e.id }}</div>
+          <div class="test-creation-date">{{ e.creation_date }}</div>
+          <div class="test-result"><a href="{{ e.video_url }}" target="_blank" class="link">Open video</a></div>
         </div>
         {% endfor %}
       </div>

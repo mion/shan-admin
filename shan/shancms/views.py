@@ -10,8 +10,8 @@ from django.http import JsonResponse
 from django.utils import dateparse
 from django.utils import timezone
 
-from .models import Venue, CalibrationVideo, CalibrationBundle, Shelf, Event
-from workers.calib_manager import add_calibration_job
+from .models import Venue, CalibrationVideo, CalibrationBundle, Shelf, Event, Experiment
+from workers.calib_manager import add_calibration_job, add_experiment_job
 
 def venue_list(request):
     venues = Venue.objects.all() # TODO filter for current user
@@ -95,10 +95,20 @@ def shelf_edit(request, venue_id, shelf_id):
                 'video_url': vid.video_url,
                 'video_calibration_image_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.jpg'
             })
+    experiments = Experiment.objects.filter(shelf_id=shelf.id)
+    exps = []
+    for e in experiments:
+        exps.append({
+            'id': e.id,
+            'creation_date': str(e.creation_date),
+            'video_url': e.video_url
+        })
     ctx = {
         'current_user': {
             'email': 'gluisvieira@gmail.com'
         },
+        'experiments_count': len(exps),
+        'experiments': exps,
         'shelf': {'id': shelf.id},
         'venue': {
             'id': venue.id,
@@ -200,8 +210,17 @@ def create_record_job(request, shelf_id):
     add_calibration_job(shelf_id)
     return JsonResponse({'success': True}, status=201)
 
-def create_experiment_job(request):
-    pass
+def create_experiment_job(request, shelf_id):
+    add_experiment_job(shelf_id)
+    return JsonResponse({'success': True}, status=201)
+
+def save_experiment(request, shelf_id):
+    shelf = Shelf.object.get(id=shelf_id)
+    payload = json.loads(request.body)
+    video_url = payload['video_url']
+    e = Experiment(shelf=shelf, video_url=video_url, creation_date=timezone.now())
+    e.save()
+    return JsonResponse({'success': True}, status=201)
 
 def get_shelf(request, shelf_id):
     shelf = Shelf.objects.get(id=shelf_id)

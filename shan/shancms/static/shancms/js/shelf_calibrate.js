@@ -10,17 +10,34 @@ var ShanAPIClient = function() {
 };
 
 ShanAPIClient.prototype.createCalibrationVideoRecordingJob = function (shelfId, callbacks) {
-  setTimeout(function () {
-    var date = new Date();
-    callbacks.success({
-      'calibration_video': {
-        'id': 4,
-        'recording_date': date.toDateString(),
-        'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4',
-        'video_calibration_image_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.jpg',
+  $.ajax({
+    type: 'POST',
+    url: '/shancms/shelves/' + shelfId + '/calibration_videos/jobs',
+    data: JSON.stringify({shelf_id: shelfId}),
+    dataType: 'json',
+    contentType: 'application/json; charset=utf-8',
+    success: function (data) {
+      if (data.success) {
+        callbacks.success(data);
+      } else {
+        callbacks.failure({message: 'Failed to create job'});
       }
-    });
-  }, 1750);
+    },
+    error: function (req, status, error) {
+      callbacks.failure(error);
+    }
+  });
+  // setTimeout(function () {
+  //   var date = new Date();
+  //   callbacks.success({
+  //     'calibration_video': {
+  //       'id': 4,
+  //       'recording_date': date.toDateString(),
+  //       'video_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.mp4',
+  //       'video_calibration_image_url': 'http://localhost:3601/calib-video-2018-08-01-1415-UTC.jpg',
+  //     }
+  //   });
+  // }, 1750);
 };
 
 ShanAPIClient.prototype.createCalibrationTestJob = function (shelfId, callbacks) {

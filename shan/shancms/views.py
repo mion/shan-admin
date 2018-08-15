@@ -1,3 +1,7 @@
+import os
+import sys
+sys.path.append('/Users/gvieira/code/toneto/shan/shan')
+sys.path.append('/Users/gvieira/code/toneto/shan/shan/workers')
 import datetime
 import json
 
@@ -7,6 +11,7 @@ from django.utils import dateparse
 from django.utils import timezone
 
 from .models import Venue, CalibrationVideo, CalibrationBundle, Shelf, Event
+from workers.calib_manager import add_calibration_job
 
 def venue_list(request):
     venues = Venue.objects.all() # TODO filter for current user
@@ -191,8 +196,9 @@ def save_calibration_bundle(request, shelf_id):
     # creation_date = models.DateTimeField('date created')
     # calibration_video = models.ForeignKey(CalibrationVideo, on_delete=models.PROTECT)
 
-def create_record_job(request):
-    pass
+def create_record_job(request, shelf_id):
+    add_calibration_job(shelf_id)
+    return JsonResponse({'success': True}, status=201)
 
 def create_experiment_job(request):
     pass

@@ -413,33 +413,6 @@ $(document).ready(function () {
     var calibrationVideoId = parseInt($(this).val());
     loadCalibrationVideo(calibrationVideoId);
   });
-  /*
-  downloadImage(calibrationImageUrl, {
-    success: function (image) {
-      var canvas = getCanvas();
-      var context = getContext(canvas);
-      console.log('Calibration image downloaded successfully.');
-
-      resizeCanvas(canvas, image.width, image.height);
-      console.log('Canvas resized to width/height: ', image.width, image.height);
-
-      renderCalibrationImage(canvas, image);
-      console.log('Calibration image rendered.');
-
-      // FIXME: This is very bad.
-      canvas['calibrationImage'] = image;
-      canvas['currentlyEditingRoi'] = null;
-      canvas['shelfRoi'] = null;
-      canvas['aisleRoi'] = null;
-      addROIEditingListeners(canvas);
-      console.log('ROI editing listeners are ready.');
-    },
-    failure: function (error) {
-      alert(error.message);
-      console.error('Failed to download calibration image!\nError:', error);
-    }
-  });
-  */
   /* Set buttons listeners */
   $('#btn-record').on('click', function () {
     updateRecordingButton($(this), true);

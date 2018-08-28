@@ -224,7 +224,8 @@ def create_experiment_job(request, shelf_id):
 def save_experiment(request, shelf_id):
     shelf = Shelf.object.get(id=shelf_id)
     payload = json.loads(request.body)
-    video_url = payload['video_url']
+    s3_key = payload['s3_key']
+    video_url = 'https://s3.amazonaws.com/shan-develop/{}'.format(s3_key)
     e = Experiment(shelf=shelf, video_url=video_url, creation_date=timezone.now())
     e.save()
     return JsonResponse({'success': True}, status=201)

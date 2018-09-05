@@ -1,7 +1,5 @@
 import os
 import sys
-sys.path.append('/Users/gvieira/code/toneto/shan/shan')
-sys.path.append('/Users/gvieira/code/toneto/shan/shan/workers')
 import datetime
 import json
 
@@ -11,7 +9,12 @@ from django.utils import dateparse
 from django.utils import timezone
 
 from .models import Venue, CalibrationVideo, CalibrationBundle, Shelf, Event, Experiment
-from workers.calib_manager import add_calibration_job, add_experiment_job
+
+sys.path.append(os.environ['SHANPATH'])
+sys.path.append(os.path.join(os.environ['SHANPATH'], 'shan/common'))
+sys.path.append(os.path.join(os.environ['SHANPATH'], 'shan/core'))
+sys.path.append(os.path.join(os.environ['SHANPATH'], 'shan/workers'))
+from calib_manager import add_calibration_job, add_experiment_job
 
 def venue_list(request):
     venues = Venue.objects.all() # TODO filter for current user
